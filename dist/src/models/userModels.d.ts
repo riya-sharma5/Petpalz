@@ -17,7 +17,6 @@ export interface IUser {
     mobileNumber: string;
     OTP?: string;
     otpExpires?: Date;
-    authProvider: String;
 }
 declare const userModel: mongoose.Model<IUser, {}, {}, {}, mongoose.Document<unknown, {}, IUser, {}, {}> & IUser & {
     _id: mongoose.Types.ObjectId;

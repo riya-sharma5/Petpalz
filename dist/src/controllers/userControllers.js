@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.checkEmail = exports.verifyOtp = exports.resendOtp = exports.sendOtp = exports.signup = void 0;
+exports.loginWithSocial = exports.loginWithMobile = exports.loginWithEmail = exports.checkEmail = exports.verifyOtp = exports.resendOtp = exports.sendOtp = exports.signup = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
@@ -176,37 +176,146 @@ const checkEmail = async (req, res, next) => {
     }
 };
 exports.checkEmail = checkEmail;
-const login = async (req, res, next) => {
+// export const login = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { loginType, email, password, mobileNumber, socialId } = req.body;
+//     if (!loginType) {
+//       return res
+//         .status(400)
+//         .json({ message: "Login type is required", code: 400 });
+//     }
+//     switch (loginType) {
+//       case "0": {
+//         if (!email || !password) {
+//           return res
+//             .status(400)
+//             .json({ message: "Email and password are required", code: 400 });
+//         }
+//         const user = await userModel.findOne({
+//           email: email.toLowerCase().trim(),
+//         });
+//         if (!user) {
+//           return res.status(404).json({ message: "User not found", code: 404 });
+//         }
+//         if (!user.isEmailVerified) {
+//           return res
+//             .status(403)
+//             .json({ message: "Email is not verified", code: 403 });
+//         }
+//         const isMatch = await bcrypt.compare(password, user.password);
+//         if (!isMatch) {
+//           return res
+//             .status(401)
+//             .json({ message: "Invalid credentials", code: 401 });
+//         }
+//         const token = jwt.sign(
+//           {
+//             _id: user._id,
+//             email: user.email,
+//             userName: user.userName,
+//           },
+//           process.env.PRIVATE_KEY as string,
+//           { expiresIn: (process.env.ACCESS_TOKEN_EXPIRY as "1d") || "1d" }
+//         );
+//         return res.status(200).json({
+//           message: "Login successful",
+//           code: 200,
+//           token,
+//           data: sanitizeUser(user),
+//         });
+//       }
+//       case "1": {
+//         if (!mobileNumber) {
+//           return res
+//             .status(400)
+//             .json({ message: "Mobile number is required", code: 400 });
+//         }
+//         const user = await userModel.findOne({
+//           mobileNumber: mobileNumber.trim(),
+//         });
+//         if (!user) {
+//           return res.status(404).json({ message: "User not found", code: 404 });
+//         }
+//         const otp = generateOTP();
+//         user.OTP = otp;
+//         user.otpExpires = moment().add(5, "minutes").toDate();
+//         await user.save();
+//         await sendOTP(user.mobileNumber, otp);
+//         return res.status(200).json({
+//           message: "OTP sent to registered number",
+//           code: 200,
+//           userId: user._id,
+//           mobileNumber: user.mobileNumber,
+//         });
+//       }
+//       case "2":
+//       case "3":
+//       case "4":
+//       case "5": {
+//         if (!email) {
+//           return res
+//             .status(400)
+//             .json({ message: "Email is required for social login", code: 400 });
+//         }
+//         const user = await userModel.findOne({
+//           email: email.toLowerCase().trim(),
+//         });
+//         if (!user) {
+//           return res.status(404).json({ message: "User not found", code: 404 });
+//         }
+//         const token = jwt.sign(
+//           {
+//             _id: user._id,
+//             email: user.email,
+//             userName: user.userName,
+//           },
+//           process.env.PRIVATE_KEY as string,
+//           { expiresIn: (process.env.ACCESS_TOKEN_EXPIRY as " 1d") || "1d" }
+//         );
+//         return res.status(200).json({
+//           message: "Login successful (social)",
+//           code: 200,
+//           token,
+//           data: sanitizeUser(user),
+//         });
+//       }
+//       default:
+//         return res
+//           .status(400)
+//           .json({ message: "Invalid login type", code: 400 });
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+const loginWithEmail = async (req, res, next) => {
     try {
-        const { loginType, password } = req.body;
-        const query = loginType.includes("0", "1", "2", "3", "4", "5")
-            ? { email: loginType.toLowerCase().trim() }
-            : { mobileNumber: loginType.trim() };
-        const user = await userModels_1.default.findOne(query);
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json({ message: "Email and password are required", code: 400 });
+        }
+        const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (!user) {
-            return res.status(404).json({
-                message: "User not found. Please register.",
-                code: 404,
-                redirectTo: "signup",
-            });
+            return res.status(404).json({ message: "User not found", code: 404 });
         }
         if (!user.isEmailVerified) {
-            //await generateAndSendOTP(user);
-            return res.status(200).json({
-                message: "logged in",
-                code: 200,
-                data: user,
-                isEmailVerified: false,
-                //email: user.email,
-            });
+            return res
+                .status(403)
+                .json({ message: "Email is not verified", code: 403 });
         }
-        const passwordMatch = await bcrypt_1.default.compare(password, user.password);
-        if (!passwordMatch) {
+        const isMatch = await bcrypt_1.default.compare(password, user.password);
+        if (!isMatch) {
             return res
                 .status(401)
                 .json({ message: "Invalid credentials", code: 401 });
         }
-        const token = jsonwebtoken_1.default.sign({ _id: user._id, email: user.email, userName: user.userName }, process.env.PRIVATE_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1d" });
+        const token = generateToken(user);
         return res.status(200).json({
             message: "Login successful",
             code: 200,
@@ -218,5 +327,59 @@ const login = async (req, res, next) => {
         next(error);
     }
 };
-exports.login = login;
+exports.loginWithEmail = loginWithEmail;
+const loginWithMobile = async (req, res, next) => {
+    try {
+        const { mobileNumber } = req.body;
+        if (!mobileNumber) {
+            return res
+                .status(400)
+                .json({ message: "Mobile number is required", code: 400 });
+        }
+        const user = await userModels_1.default.findOne({ mobileNumber: mobileNumber.trim() });
+        if (!user) {
+            return res.status(404).json({ message: "User not found", code: 404 });
+        }
+        const otp = (0, OTP_1.generateOTP)();
+        user.OTP = otp;
+        user.otpExpires = (0, moment_1.default)().add(5, "minutes").toDate();
+        await user.save();
+        await (0, OTP_1.sendOTP)(user.mobileNumber, otp);
+        return res.status(200).json({
+            message: "OTP sent to registered number",
+            code: 200,
+            userId: user._id,
+            mobileNumber: user.mobileNumber,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.loginWithMobile = loginWithMobile;
+const loginWithSocial = async (req, res, next) => {
+    try {
+        const { email, socialId } = req.body;
+        if (!email || !socialId) {
+            return res
+                .status(400)
+                .json({ message: "Email and socialId are required", code: 400 });
+        }
+        const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
+        if (!user) {
+            return res.status(404).json({ message: "User not found", code: 404 });
+        }
+        const token = generateToken(user);
+        return res.status(200).json({
+            message: "Login successful (social)",
+            code: 200,
+            token,
+            data: sanitizeUser(user),
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.loginWithSocial = loginWithSocial;
 //# sourceMappingURL=userControllers.js.map
