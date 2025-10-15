@@ -189,8 +189,7 @@ export const login = async (
       message: "logged in",
       code: 200,
       data: user,
-      isEmailVerified: false
-      //requireOTP: true,
+      isEmailVerified: false,
       //email: user.email,
       });
     }
