@@ -1,0 +1,15 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.connectDB = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+exports.connectDB = mongoose_1.default
+    .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/Petpalz");
+//.then(() => {
+// mongoose.set({ debug: true });
+// console.log("MongoDB connected");
+// })
+// .catch((error) => console.error("MongoDB connection error:", error));
+//# sourceMappingURL=database.js.map
