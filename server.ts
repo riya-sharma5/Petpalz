@@ -5,7 +5,7 @@ import { App } from "./src/app";
 import { connectDB } from "./src/databases/database";
 
 dotenv.config();
-const port = process.env.PORT || 9092;
+const port = process.env.PORT || 6005;
 const base_url = process.env.BASE_URL || "";
 
 const myApp = new App(port, base_url);

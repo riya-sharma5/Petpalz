@@ -67,6 +67,10 @@ export const resendOtpValidation = Joi.object({
 
 });
 
+export const checkEmailValidation = Joi.object({
+    email: Joi.string().required()
+});
+
 export const verifyOtpValidation = Joi.object({
 
 });

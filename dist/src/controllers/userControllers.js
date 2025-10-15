@@ -36,17 +36,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.verifyOtp = exports.resendOtp = exports.sendOtp = exports.signup = void 0;
+exports.login = exports.checkEmail = exports.verifyOtp = exports.resendOtp = exports.sendOtp = exports.signup = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
 const moment_1 = __importDefault(require("moment"));
 const userModels_1 = __importDefault(require("../models/userModels"));
 const OTP_1 = require("../utils/OTP");
+dotenv.config();
 const generateToken = (user) => {
     return jsonwebtoken_1.default.sign({ _id: user._id, email: user.email, userName: user.userName }, process.env.PRIVATE_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1d" });
 };
-dotenv.config();
 if (!process.env.PRIVATE_KEY) {
     throw new Error("Missing PRIVATE_KEY in environment variables.");
 }
@@ -156,12 +156,32 @@ const verifyOtp = async (req, res, next) => {
     }
 };
 exports.verifyOtp = verifyOtp;
+const checkEmail = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        const user = await userModels_1.default.findOne({ email });
+        if (user) {
+            return res
+                .status(200)
+                .json({ exists: true, message: "Email already exists", code: 200 });
+        }
+        else {
+            return res
+                .status(200)
+                .json({ exists: false, message: "Email is available", code: 200 });
+        }
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.checkEmail = checkEmail;
 const login = async (req, res, next) => {
     try {
-        const { identifier, password } = req.body;
-        const query = identifier.includes("@")
-            ? { email: identifier.toLowerCase().trim() }
-            : { mobileNumber: identifier.trim() };
+        const { loginType, password } = req.body;
+        const query = loginType.includes("0", "1", "2", "3", "4", "5")
+            ? { email: loginType.toLowerCase().trim() }
+            : { mobileNumber: loginType.trim() };
         const user = await userModels_1.default.findOne(query);
         if (!user) {
             return res.status(404).json({
@@ -176,8 +196,7 @@ const login = async (req, res, next) => {
                 message: "logged in",
                 code: 200,
                 data: user,
-                isEmailVerified: false
-                //requireOTP: true,
+                isEmailVerified: false,
                 //email: user.email,
             });
         }

@@ -1,5 +1,15 @@
 import mongoose, { Document, Schema } from "mongoose";
 
+
+export enum loginType {
+  "email" = "0",
+  "mobile-number" = "1",
+  "google" = "2",
+  "facebook" = "3",
+  "twitter" = "4",
+  "apple" = "5"
+}
+
 export interface IUser  {
   fullName: string;
   password: string;
@@ -10,7 +20,6 @@ export interface IUser  {
   mobileNumber: string;
   OTP?: string;
   otpExpires?: Date;
-  authProvider: String;
 }
 
 const userSchema: Schema<IUser> = new Schema(

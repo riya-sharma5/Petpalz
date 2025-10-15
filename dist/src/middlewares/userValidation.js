@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginValidation = exports.verifyOtpValidation = exports.resendOtpValidation = exports.sendOtpValidation = exports.signupValidation = exports.validateParams = exports.validateQuery = exports.validateRequest = void 0;
+exports.loginValidation = exports.verifyOtpValidation = exports.checkEmailValidation = exports.resendOtpValidation = exports.sendOtpValidation = exports.signupValidation = exports.validateParams = exports.validateQuery = exports.validateRequest = void 0;
 const joi_1 = __importDefault(require("joi"));
 const validateRequest = (schema) => {
     return async (req, res, next) => {
@@ -61,6 +61,9 @@ exports.signupValidation = joi_1.default.object({
 });
 exports.sendOtpValidation = joi_1.default.object({});
 exports.resendOtpValidation = joi_1.default.object({});
+exports.checkEmailValidation = joi_1.default.object({
+    email: joi_1.default.string().required()
+});
 exports.verifyOtpValidation = joi_1.default.object({});
 exports.loginValidation = joi_1.default.object({
     identifier: joi_1.default.string().required(),

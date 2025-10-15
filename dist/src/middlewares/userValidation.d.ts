@@ -7,6 +7,7 @@ export declare const validateParams: (schema: ObjectSchema) => (req: Request, re
 export declare const signupValidation: Joi.ObjectSchema<any>;
 export declare const sendOtpValidation: Joi.ObjectSchema<any>;
 export declare const resendOtpValidation: Joi.ObjectSchema<any>;
+export declare const checkEmailValidation: Joi.ObjectSchema<any>;
 export declare const verifyOtpValidation: Joi.ObjectSchema<any>;
 export declare const loginValidation: Joi.ObjectSchema<any>;
 //# sourceMappingURL=userValidation.d.ts.map
