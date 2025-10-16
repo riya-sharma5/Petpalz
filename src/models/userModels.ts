@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-
 export enum loginType {
   "email" = "0",
   "mobile-number" = "1",
@@ -10,7 +9,13 @@ export enum loginType {
   "apple" = "5"
 }
 
-export interface IUser  {
+interface SocialId {
+  id: string;      
+  type: loginType;  
+  email: string;    
+}
+
+export interface IUser extends Document {
   fullName: string;
   password: string;
   email: string;
@@ -20,6 +25,7 @@ export interface IUser  {
   mobileNumber: string;
   OTP?: string;
   otpExpires?: Date;
+  socialIds?: SocialId[]; 
 }
 
 const userSchema: Schema<IUser> = new Schema(
@@ -28,24 +34,20 @@ const userSchema: Schema<IUser> = new Schema(
       type: String,
       required: true,
       unique: true,
-      
     },
     fullName: {
       type: String,
       required: false,
-      
     },
     email: {
       type: String,
       required: true,
       unique: true,
-      
     },
     mobileNumber: {
       type: String,
       required: false,
       unique: true,
-      
     },
     dateOfBirth: {
       type: Date,
@@ -53,7 +55,7 @@ const userSchema: Schema<IUser> = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false, 
     },
     OTP: {
       type: String,
@@ -63,6 +65,17 @@ const userSchema: Schema<IUser> = new Schema(
       type: Date,
       default: null,
     },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    socialIds: [
+      {
+        id: { type: String, required: true },
+        type: { type: String, enum: Object.values(loginType), required: true },
+        email: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true,

@@ -9,5 +9,7 @@ export declare const sendOtpValidation: Joi.ObjectSchema<any>;
 export declare const resendOtpValidation: Joi.ObjectSchema<any>;
 export declare const checkEmailValidation: Joi.ObjectSchema<any>;
 export declare const verifyOtpValidation: Joi.ObjectSchema<any>;
-export declare const loginValidation: Joi.ObjectSchema<any>;
+export declare const loginWithEmailValidation: Joi.ObjectSchema<any>;
+export declare const loginWihMobileValidation: Joi.ObjectSchema<any>;
+export declare const loginWithSocialValidation: Joi.ObjectSchema<any>;
 //# sourceMappingURL=userValidation.d.ts.map

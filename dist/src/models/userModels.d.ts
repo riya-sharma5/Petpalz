@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 export declare enum loginType {
     "email" = "0",
     "mobile-number" = "1",
@@ -7,7 +7,12 @@ export declare enum loginType {
     "twitter" = "4",
     "apple" = "5"
 }
-export interface IUser {
+interface SocialId {
+    id: string;
+    type: loginType;
+    email: string;
+}
+export interface IUser extends Document {
     fullName: string;
     password: string;
     email: string;
@@ -17,10 +22,11 @@ export interface IUser {
     mobileNumber: string;
     OTP?: string;
     otpExpires?: Date;
+    socialIds?: SocialId[];
 }
-declare const userModel: mongoose.Model<IUser, {}, {}, {}, mongoose.Document<unknown, {}, IUser, {}, {}> & IUser & {
-    _id: mongoose.Types.ObjectId;
-} & {
+declare const userModel: mongoose.Model<IUser, {}, {}, {}, mongoose.Document<unknown, {}, IUser, {}, {}> & IUser & Required<{
+    _id: unknown;
+}> & {
     __v: number;
 }, any>;
 export default userModel;

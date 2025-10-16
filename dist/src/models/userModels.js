@@ -70,7 +70,7 @@ const userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
     },
     OTP: {
         type: String,
@@ -80,6 +80,17 @@ const userSchema = new mongoose_1.Schema({
         type: Date,
         default: null,
     },
+    isEmailVerified: {
+        type: Boolean,
+        default: false,
+    },
+    socialIds: [
+        {
+            id: { type: String, required: true },
+            type: { type: String, enum: Object.values(loginType), required: true },
+            email: { type: String, required: true },
+        },
+    ],
 }, {
     timestamps: true,
     collection: "users",

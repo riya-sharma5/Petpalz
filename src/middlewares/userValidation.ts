@@ -53,18 +53,18 @@ userName : Joi.string().required(),
  fullName : Joi.string().optional(),
   email: Joi.string().required(),
    mobileNumber : Joi.string().optional(),
-    DOB : Joi.string().optional(),
+    dateOfBirth : Joi.string().optional(),
     password : Joi.string().required(), 
     confirmPassword: Joi.string().required()
 });
 
 
 export const sendOtpValidation = Joi.object({
-
+   email: Joi.string().required()
 });
 
 export const resendOtpValidation = Joi.object({
-
+     email: Joi.string().required()
 });
 
 export const checkEmailValidation = Joi.object({
@@ -72,10 +72,23 @@ export const checkEmailValidation = Joi.object({
 });
 
 export const verifyOtpValidation = Joi.object({
-
+  email: Joi.string().required(),
+  OTP: Joi.string().required()
 });
 
-export const loginValidation = Joi.object({
- identifier: Joi.string().required(),
- password: Joi.string().required()
+export const loginWithEmailValidation = Joi.object({
+ email: Joi.string().required(),
+ password: Joi.string().required(),
+ loginType: Joi.string().required()
 });
+
+export const loginWihMobileValidation = Joi.object({
+ mobileNumber: Joi.string().required(),
+ loginType: Joi.string().required()
+});
+
+export const loginWithSocialValidation = Joi.object({
+  loginType: Joi.string().required(),
+  email: Joi.string().required(),
+  socialId: Joi.string().required()
+})
