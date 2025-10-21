@@ -1,0 +1,29 @@
+export declare const messages: {
+    fileUploadError: string;
+    createdSuccesfully: string;
+    postNotFound: string;
+    postFetched: string;
+    userPostFetched: string;
+    postUpdatedSuccessfully: string;
+    postDeletedSuccessfully: string;
+    passwordNotMatched: string;
+    emailAlreadyExists: string;
+    usernameAlreadyExists: string;
+    otpSent: string;
+    emailRequired: string;
+    userNotFound: string;
+    emailOtpRequired: string;
+    invalidOtp: string;
+    otpExpired: string;
+    otpVerified: string;
+    socialLogin: string;
+    userSignup: string;
+    invalidLogin: string;
+    mobileOtpSent: string;
+    loginSuccessful: string;
+    emailNotVerified: string;
+    invalidCredentials: string;
+    emailSignup: string;
+    userRegistered: string;
+};
+//# sourceMappingURL=message.d.ts.map

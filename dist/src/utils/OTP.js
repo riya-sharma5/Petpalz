@@ -39,11 +39,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendOTP = exports.generateOTP = void 0;
 const dotenv = __importStar(require("dotenv"));
 const nodemailer_1 = __importDefault(require("nodemailer"));
-const crypto_1 = __importDefault(require("crypto"));
 dotenv.config();
 const generateOTP = () => {
-    const otp = crypto_1.default.randomInt(100000, 999999);
-    return otp.toString();
+    return "0000";
 };
 exports.generateOTP = generateOTP;
 const sendOTP = async (email, OTP) => {

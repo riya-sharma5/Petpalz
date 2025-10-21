@@ -43,6 +43,7 @@ const dotenv = __importStar(require("dotenv"));
 const moment_1 = __importDefault(require("moment"));
 const userModels_1 = __importDefault(require("../models/userModels"));
 const OTP_1 = require("../utils/OTP");
+const message_1 = require("../utils/message");
 dotenv.config();
 const generateToken = (user) => {
     return jsonwebtoken_1.default.sign({ _id: user._id, email: user.email, userName: user.userName }, process.env.PRIVATE_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1d" });
@@ -71,26 +72,28 @@ const signup = async (req, res, next) => {
         if (password !== confirmPassword) {
             return res
                 .status(400)
-                .json({ message: "Passwords do not match", code: 400 });
+                .json({ message: message_1.messages.passwordNotMatched, code: 400 });
         }
-        const emailExists = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
+        const emailExists = await userModels_1.default.findOne({
+            email: email.toLowerCase().trim(),
+        });
         if (emailExists) {
             return res
                 .status(400)
-                .json({ message: "Email already registered", code: 400 });
+                .json({ message: message_1.messages.emailAlreadyExists, code: 400 });
         }
-        const usernameExists = await userModels_1.default.findOne({ userName: userName.trim() });
+        const usernameExists = await userModels_1.default.findOne({
+            userName: userName.trim(),
+        });
         if (usernameExists) {
             return res
                 .status(400)
-                .json({ message: "Username already taken", code: 400 });
+                .json({ message: message_1.messages.usernameAlreadyExists, code: 400 });
         }
         if (!fullName || fullName.trim() === "") {
             fullName = userName;
         }
         const hashedPassword = await bcrypt_1.default.hash(password, 10);
-        const otp = (0, OTP_1.generateOTP)();
-        const otpExpires = (0, moment_1.default)().add(5, "minutes").toDate();
         const user = await userModels_1.default.create({
             userName: userName.trim(),
             fullName: fullName.trim(),
@@ -98,16 +101,10 @@ const signup = async (req, res, next) => {
             mobileNumber: mobileNumber?.trim(),
             dateOfBirth,
             password: hashedPassword,
-            OTP: otp,
-            otpExpires,
             isEmailVerified: false,
         });
-        await (0, OTP_1.sendOTP)(email, otp);
-        if (mobileNumber && mobileNumber.trim() !== "") {
-            await (0, OTP_1.sendOTP)(mobileNumber, otp);
-        }
         return res.status(201).json({
-            message: "User registered. OTP sent.",
+            message: message_1.messages.userRegistered,
             code: 201,
             data: sanitizeUser(user),
         });
@@ -121,14 +118,16 @@ const sendOtp = async (req, res, next) => {
     try {
         const { email } = req.body;
         if (!email)
-            return res.status(400).json({ message: "Email is required", code: 400 });
+            return res
+                .status(400)
+                .json({ message: message_1.messages.emailRequired, code: 400 });
         const user = await userModels_1.default.findOne({ email });
         if (!user)
-            return res.status(404).json({ message: "User not found", code: 404 });
+            return res
+                .status(404)
+                .json({ message: message_1.messages.userNotFound, code: 404 });
         await generateAndSendOTP(user);
-        return res
-            .status(200)
-            .json({ message: "OTP sent successfully", code: 200 });
+        return res.status(200).json({ message: message_1.messages.otpSent, code: 200 });
     }
     catch (error) {
         next(error);
@@ -142,20 +141,17 @@ const verifyOtp = async (req, res, next) => {
         if (!email || !OTP)
             return res
                 .status(400)
-                .json({ message: "Email and OTP required", code: 400 });
+                .json({ message: message_1.messages.emailOtpRequired, code: 400 });
         const user = await userModels_1.default.findOne({ email });
         if (!user || user.OTP !== OTP) {
-            return res.status(400).json({ message: "Invalid OTP", code: 400 });
+            return res.status(400).json({ message: message_1.messages.invalidOtp, code: 400 });
         }
         if (!user.otpExpires || (0, moment_1.default)().isAfter(user.otpExpires)) {
-            return res.status(400).json({ message: "OTP expired", code: 400 });
+            return res.status(400).json({ message: message_1.messages.otpExpired, code: 400 });
         }
         user.isEmailVerified = true;
         await user.save();
-        console.log("After verification:", user.isEmailVerified);
-        return res
-            .status(200)
-            .json({ message: "OTP verified successfully", code: 200 });
+        return res.status(200).json({ message: message_1.messages.otpVerified, code: 200 });
     }
     catch (error) {
         next(error);
@@ -169,7 +165,7 @@ const checkEmail = async (req, res, next) => {
         if (user) {
             return res.status(200).json({
                 exists: true,
-                message: "Email already exists",
+                message: message_1.messages.emailAlreadyExists,
                 code: 200,
                 user,
             });
@@ -177,7 +173,7 @@ const checkEmail = async (req, res, next) => {
         else {
             return res.status(404).json({
                 exists: false,
-                message: "Email not found, please sign up",
+                message: message_1.messages.emailSignup,
                 code: 404,
             });
         }
@@ -191,29 +187,31 @@ const loginWithEmail = async (req, res, next) => {
     try {
         const { email, password, loginType } = req.body;
         if (loginType !== "0") {
-            return res.status(400).json({ message: "Invalid login type", code: 400 });
+            return res
+                .status(400)
+                .json({ message: message_1.messages.invalidLogin, code: 400 });
         }
         const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (!user)
-            return res.status(404).json({ message: "User not found", code: 404 });
+            return res
+                .status(404)
+                .json({ message: message_1.messages.userNotFound, code: 404 });
         const isMatch = await bcrypt_1.default.compare(password, user.password);
         if (!isMatch) {
             return res
                 .status(401)
-                .json({ message: "Invalid credentials", code: 401 });
+                .json({ message: message_1.messages.invalidCredentials, code: 401 });
         }
         const token = generateToken(user);
         if (!user.isEmailVerified) {
-            return res
-                .status(403)
-                .json({
-                message: "Email not verified",
+            return res.status(403).json({
+                message: message_1.messages.emailNotVerified,
                 code: 403,
                 isEmailVerified: false,
             });
         }
         return res.status(200).json({
-            message: "Login successful",
+            message: message_1.messages.loginSuccessful,
             code: 200,
             token,
             data: sanitizeUser(user),
@@ -227,19 +225,24 @@ exports.loginWithEmail = loginWithEmail;
 const loginWithMobile = async (req, res, next) => {
     try {
         const { mobileNumber, loginType } = req.body;
+        console.log("number", loginType, "number", mobileNumber);
         if (loginType !== "1") {
-            return res.status(400).json({ message: "Invalid login type", code: 400 });
+            return res
+                .status(400)
+                .json({ message: message_1.messages.invalidLogin, code: 400 });
         }
         const user = await userModels_1.default.findOne({ mobileNumber: mobileNumber.trim() });
         if (!user)
-            return res.status(404).json({ message: "User not found", code: 404 });
+            return res
+                .status(404)
+                .json({ message: message_1.messages.userNotFound, code: 404 });
         const otp = (0, OTP_1.generateOTP)();
         user.OTP = otp;
         user.otpExpires = (0, moment_1.default)().add(5, "minutes").toDate();
         await user.save();
-        await (0, OTP_1.sendOTP)(user.mobileNumber, otp);
+        //await sendOTP(user.mobileNumber, otp);
         return res.status(200).json({
-            message: "OTP sent to registered mobile number",
+            message: message_1.messages.mobileOtpSent,
             code: 200,
             userId: user._id,
         });
@@ -252,23 +255,20 @@ exports.loginWithMobile = loginWithMobile;
 const loginWithSocial = async (req, res, next) => {
     try {
         const { email, loginType, socialId } = req.body;
-        if (!email || !socialId || !loginType) {
-            return res.status(400).json({ message: "email, socialId, and loginType are required", code: 400 });
-        }
         let user = await userModels_1.default.findOne({
             socialIds: {
                 $elemMatch: {
                     id: socialId,
                     type: loginType,
-                    email: email.toLowerCase().trim(),
+                    email: email,
                 },
             },
         });
         if (!user) {
-            user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
+            user = await userModels_1.default.findOne({ email: email });
             if (!user) {
                 return res.status(404).json({
-                    message: "User not found. Please sign up.",
+                    message: message_1.messages.userSignup,
                     code: 404,
                 });
             }
@@ -285,7 +285,7 @@ const loginWithSocial = async (req, res, next) => {
         }
         const token = generateToken(user);
         return res.status(200).json({
-            message: "Social login successful",
+            message: message_1.messages.socialLogin,
             code: 200,
             token,
             data: sanitizeUser(user),

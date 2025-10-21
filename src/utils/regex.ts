@@ -1,0 +1,1 @@
+export const fileRegex = /jpeg|jpg|png|gif|mp4|mov|avi|webm/;

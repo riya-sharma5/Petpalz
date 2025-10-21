@@ -32,47 +32,22 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.App = void 0;
-const express_1 = __importDefault(require("express"));
-const dotenv = __importStar(require("dotenv"));
-const postRoutes_1 = __importDefault(require("./routes/postRoutes"));
-const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
-dotenv.config();
-class App {
-    app;
-    port;
-    base_url;
-    constructor(port, base_url) {
-        this.app = (0, express_1.default)();
-        this.port = port;
-        this.base_url = base_url;
-    }
-    async initialize() {
-        try {
-            this.app.listen(this.port, () => {
-                console.log(` Server is running on ${this.base_url}${this.port}`);
-            });
-        }
-        catch (error) {
-            console.log("Server Connection error:", error);
-            process.exit();
-        }
-        this.initializeMiddlewares();
-        this.initializeRoutes();
-    }
-    initializeMiddlewares() {
-        this.app.use(express_1.default.json());
-        this.app.use(express_1.default.urlencoded({ extended: true }));
-        this.app.use("/uploads", express_1.default.static("uploads"));
-    }
-    initializeRoutes() {
-        this.app.use("/user", userRoutes_1.default);
-        this.app.use("/post", postRoutes_1.default);
-    }
-}
-exports.App = App;
-//# sourceMappingURL=app.js.map
+const mongoose_1 = __importStar(require("mongoose"));
+const postSchema = new mongoose_1.Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    files: [{ type: String }],
+    createdBy: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "users",
+        required: true,
+    },
+}, {
+    timestamps: true,
+    collection: "posts",
+    versionKey: false,
+});
+const postModel = mongoose_1.default.model("posts", postSchema);
+exports.default = postModel;
+//# sourceMappingURL=postModel.js.map

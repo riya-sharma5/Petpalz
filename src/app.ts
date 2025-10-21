@@ -1,6 +1,7 @@
 import express from "express";
 import { Application } from "express";
 import * as dotenv from "dotenv";
+import postRoute from './routes/postRoutes'
 import userRoute from './routes/userRoutes'
 dotenv.config();
 
@@ -32,11 +33,12 @@ export class App {
   private initializeMiddlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use("/uploads", express.static("uploads"));
   }
 
   private initializeRoutes(): void {
    this.app.use("/user", userRoute);
-
+    this.app.use("/post", postRoute)
 
   }
 }

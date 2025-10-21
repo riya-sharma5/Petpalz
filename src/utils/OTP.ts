@@ -5,8 +5,8 @@ import crypto from "crypto";
 dotenv.config();
 
 export const generateOTP = () => {
-  const otp = crypto.randomInt(100000, 999999);
-  return otp.toString();
+ 
+  return  "0000";
 };
 export const sendOTP = async (email: string, OTP: string) => {
   const transporter = nodemailer.createTransport({
