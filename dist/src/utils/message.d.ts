@@ -1,29 +1,46 @@
-export declare const messages: {
-    fileUploadError: string;
-    createdSuccesfully: string;
-    postNotFound: string;
+export declare const SUCCESS_RESPONSE: {
+    createdSuccessfully: string;
     postFetched: string;
     userPostFetched: string;
     postUpdatedSuccessfully: string;
     postDeletedSuccessfully: string;
+    otpSent: string;
+    otpVerified: string;
+    socialLogin: string;
+    mobileOtpSent: string;
+    loginSuccessful: string;
+    userRegistered: string;
+    likeSuccessful: string;
+    unlikeSuccessful: string;
+    commentAdded: string;
+    commentUpdated: string;
+    commentDeleted: string;
+    commentsFetched: string;
+};
+export declare const ERROR_RESPONSE: {
+    fileUploadError: string;
+    postNotFound: string;
+    commentNotFound: string;
     passwordNotMatched: string;
     emailAlreadyExists: string;
     usernameAlreadyExists: string;
-    otpSent: string;
     emailRequired: string;
     userNotFound: string;
     emailOtpRequired: string;
     invalidOtp: string;
     otpExpired: string;
-    otpVerified: string;
-    socialLogin: string;
     userSignup: string;
     invalidLogin: string;
-    mobileOtpSent: string;
-    loginSuccessful: string;
     emailNotVerified: string;
     invalidCredentials: string;
     emailSignup: string;
-    userRegistered: string;
+    invalidEntityType: string;
+    missingEntityInfo: string;
+    unauthorized: string;
+    unauthorizedAction: string;
+    invalidInput: string;
+    cannotEditAfter24h: string;
+    postIdRequired: string;
+    commentIdRequired: string;
 };
 //# sourceMappingURL=message.d.ts.map

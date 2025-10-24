@@ -1,0 +1,1 @@
+{"version":3,"file":"likesValidation.js","sourceRoot":"","sources":["../../../src/validations/likesValidation.ts"],"names":[],"mappings":";;;;;;AAAA,8CAAsB;AAET,QAAA,gBAAgB,GAAG,aAAG,CAAC,MAAM,CAAC;IACvC,QAAQ,EAAG,aAAG,CAAC,MAAM,EAAE,CAAC,QAAQ,EAAE;IAClC,MAAM,EAAE,aAAG,CAAC,MAAM,EAAE,CAAC,QAAQ,EAAE;IAC/B,IAAI,EAAE,aAAG,CAAC,MAAM,EAAE,CAAC,QAAQ,EAAE;CAChC,CAAC,CAAA"}

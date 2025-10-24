@@ -3,16 +3,16 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IPost extends Document {
   title: string;
   description: string;
-  files: string[]; 
-  createdBy: mongoose.Types.ObjectId;
+  files: string[];
+  userId: mongoose.Types.ObjectId;
 }
 const postSchema: Schema<IPost> = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
     files: [{ type: String }],
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
+    userId: {    
+      type: mongoose.Schema.Types.ObjectId, 
       ref: "users",
       required: true,
     },
@@ -23,7 +23,6 @@ const postSchema: Schema<IPost> = new Schema(
     versionKey: false,
   }
 );
-
 
 const postModel = mongoose.model<IPost>("posts", postSchema);
 export default postModel;

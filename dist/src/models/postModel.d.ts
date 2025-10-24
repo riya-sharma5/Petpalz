@@ -3,7 +3,7 @@ export interface IPost extends Document {
     title: string;
     description: string;
     files: string[];
-    createdBy: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId;
 }
 declare const postModel: mongoose.Model<IPost, {}, {}, {}, mongoose.Document<unknown, {}, IPost, {}, {}> & IPost & Required<{
     _id: unknown;

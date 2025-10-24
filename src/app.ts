@@ -2,6 +2,8 @@ import express from "express";
 import { Application } from "express";
 import * as dotenv from "dotenv";
 import postRoute from './routes/postRoutes'
+import likesRoute from './routes/likesRoutes';
+import commentsRoute from './routes/commentsRoutes';
 import userRoute from './routes/userRoutes'
 dotenv.config();
 
@@ -38,7 +40,9 @@ export class App {
 
   private initializeRoutes(): void {
    this.app.use("/user", userRoute);
-    this.app.use("/post", postRoute)
+    this.app.use("/post", postRoute);
+    this.app.use('/likes', likesRoute);
+    this.app.use('/comments', commentsRoute);
 
   }
 }

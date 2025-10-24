@@ -1,27 +1,28 @@
 import { Request, Response, NextFunction } from "express";
 import postModel from "../models/postModel";
-import {messages} from '../utils/message';
-import mongoose from "mongoose";
+import { SUCCESS_RESPONSE, ERROR_RESPONSE } from "../utils/message";
 
-export const createPost = async (req: Request, res: Response, next: NextFunction) => {
+export const createPost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { title, description, userId } = req.body;
 
-    if (!userId) {
-      return res.status(400).json({ message: "userId is required", code: 400 });
-    }
-
-    const uploadedFiles = req.files ? (req.files as Express.Multer.File[]).map(file => file.path) : [];
+    const uploadedFiles = req.files
+      ? (req.files as Express.Multer.File[]).map((file) => file.path)
+      : [];
 
     const post = await postModel.create({
       title,
       description,
       files: uploadedFiles,
-      createdBy: userId,
+      userId: userId,
     });
 
     return res.status(201).json({
-      message: messages.createdSuccesfully,
+      message: SUCCESS_RESPONSE.createdSuccessfully,
       code: 201,
       post,
     });
@@ -30,17 +31,25 @@ export const createPost = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getPostById = async (req: Request, res: Response, next: NextFunction) => {
+export const getPostById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { postId } = req.params;
 
-    const post = await postModel.findById(postId).populate("createdBy", "userName email");
+    const post = await postModel
+      .findById(postId)
+      .populate("userId", "userName email");
     if (!post) {
-      return res.status(404).json({ message: messages.postNotFound, code: 404 });
+      return res
+        .status(404)
+        .json({ message: ERROR_RESPONSE.postNotFound, code: 404 });
     }
 
     return res.status(200).json({
-      message: messages.postFetched,
+      message: SUCCESS_RESPONSE.postFetched,
       code: 200,
       post,
     });
@@ -49,13 +58,17 @@ export const getPostById = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const getPostsByUser = async (req: Request, res: Response, next: NextFunction) => {
+export const getPostsByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { userId } = req.body;
-     const posts = await postModel.find({ createdBy: userId });
+    const posts = await postModel.find({ userId: userId });
 
     return res.status(200).json({
-      message: messages.userPostFetched,
+      message: SUCCESS_RESPONSE.userPostFetched,
       code: 200,
       posts,
     });
@@ -64,13 +77,18 @@ export const getPostsByUser = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-
-export const updatePost = async (req: Request, res: Response, next: NextFunction) => {
+export const updatePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { postId } = req.params;
     const { title, description } = req.body;
 
-    const uploadedFiles = req.files ? (req.files as Express.Multer.File[]).map(file => file.path) : [];
+    const uploadedFiles = req.files
+      ? (req.files as Express.Multer.File[]).map((file) => file.path)
+      : [];
 
     const updatedPost = await postModel.findByIdAndUpdate(
       postId,
@@ -78,18 +96,20 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
         $set: {
           title,
           description,
-          ...(uploadedFiles.length > 0 && { files: uploadedFiles }), 
+          ...(uploadedFiles.length > 0 && { files: uploadedFiles }),
         },
       },
       { new: true }
     );
 
     if (!updatedPost) {
-      return res.status(404).json({ message: messages.postNotFound, code: 404 });
+      return res
+        .status(404)
+        .json({ message: ERROR_RESPONSE.postNotFound, code: 404 });
     }
 
     return res.status(200).json({
-      message: messages.postUpdatedSuccessfully,
+      message: SUCCESS_RESPONSE.postUpdatedSuccessfully,
       code: 200,
       post: updatedPost,
     });
@@ -98,17 +118,23 @@ export const updatePost = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const deletePost = async (req: Request, res: Response, next: NextFunction) => {
+export const deletePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { postId } = req.params;
 
     const deletedPost = await postModel.findByIdAndDelete(postId);
     if (!deletedPost) {
-      return res.status(404).json({ message: messages.postNotFound, code: 404 });
+      return res
+        .status(404)
+        .json({ message: ERROR_RESPONSE.postNotFound, code: 404 });
     }
 
     return res.status(200).json({
-      message: messages.postDeletedSuccessfully,
+      message: SUCCESS_RESPONSE.postDeletedSuccessfully,
       code: 200,
     });
   } catch (error) {

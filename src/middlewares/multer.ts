@@ -3,7 +3,8 @@ import path from "path";
 import fs from "fs";
 import { Request } from "express";
 import { fileRegex } from "../utils/regex";
-import { messages } from "../utils/message";
+import { SUCCESS_RESPONSE, ERROR_RESPONSE } from "../utils/message";
+
 
 const uploadFolder = "uploads/";
 if (!fs.existsSync(uploadFolder)) {
@@ -20,7 +21,7 @@ const fileFilter = (
   if (allowedTypes.test(ext)) {
     cb(null, true);
   } else {
-    cb(new Error(messages.fileUploadError));
+    cb(new Error(ERROR_RESPONSE.fileUploadError));
   }
 };
 

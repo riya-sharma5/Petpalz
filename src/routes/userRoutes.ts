@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { validateRequest, signupValidation, sendOtpValidation, resendOtpValidation, verifyOtpValidation, loginWithEmailValidation } from "../middlewares/userValidation";
+import { validateRequest, signupValidation, sendOtpValidation, resendOtpValidation, verifyOtpValidation, loginWithEmailValidation } from "../validations/userValidation";
 
 import {
  signup,
  sendOtp,
- resendOtp,
+ //resendOtp,
  verifyOtp,
  checkEmail,
  loginWithEmail,
@@ -25,6 +25,6 @@ router.post("/social-login", loginWithSocial);
 router.post('/send-otp', validateRequest(sendOtpValidation), sendOtp);
 router.post('/verify-otp', validateRequest(verifyOtpValidation), verifyOtp);
 router.post('/check-email', checkEmail);
-router.post('/resend-otp', validateRequest(resendOtpValidation), resendOtp);
+//router.post('/resend-otp', validateRequest(resendOtpValidation), resendOtp);
 
 export default router;

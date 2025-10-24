@@ -40,6 +40,8 @@ exports.App = void 0;
 const express_1 = __importDefault(require("express"));
 const dotenv = __importStar(require("dotenv"));
 const postRoutes_1 = __importDefault(require("./routes/postRoutes"));
+const likesRoutes_1 = __importDefault(require("./routes/likesRoutes"));
+const commentsRoutes_1 = __importDefault(require("./routes/commentsRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 dotenv.config();
 class App {
@@ -72,6 +74,8 @@ class App {
     initializeRoutes() {
         this.app.use("/user", userRoutes_1.default);
         this.app.use("/post", postRoutes_1.default);
+        this.app.use('/likes', likesRoutes_1.default);
+        this.app.use('/comments', commentsRoutes_1.default);
     }
 }
 exports.App = App;

@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginWithSocial = exports.loginWithMobile = exports.loginWithEmail = exports.checkEmail = exports.verifyOtp = exports.resendOtp = exports.sendOtp = exports.signup = void 0;
+exports.loginWithSocial = exports.loginWithMobile = exports.loginWithEmail = exports.checkEmail = exports.verifyOtp = exports.sendOtp = exports.signup = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
@@ -70,25 +70,28 @@ const signup = async (req, res, next) => {
     try {
         let { userName, fullName, email, mobileNumber, dateOfBirth, password, confirmPassword, } = req.body;
         if (password !== confirmPassword) {
-            return res
-                .status(400)
-                .json({ message: message_1.messages.passwordNotMatched, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.passwordNotMatched,
+                code: 400,
+            });
         }
         const emailExists = await userModels_1.default.findOne({
             email: email.toLowerCase().trim(),
         });
         if (emailExists) {
-            return res
-                .status(400)
-                .json({ message: message_1.messages.emailAlreadyExists, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.emailAlreadyExists,
+                code: 400,
+            });
         }
         const usernameExists = await userModels_1.default.findOne({
             userName: userName.trim(),
         });
         if (usernameExists) {
-            return res
-                .status(400)
-                .json({ message: message_1.messages.usernameAlreadyExists, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.usernameAlreadyExists,
+                code: 400,
+            });
         }
         if (!fullName || fullName.trim() === "") {
             fullName = userName;
@@ -97,14 +100,14 @@ const signup = async (req, res, next) => {
         const user = await userModels_1.default.create({
             userName: userName.trim(),
             fullName: fullName.trim(),
-            email: email.toLowerCase().trim(),
+            email,
             mobileNumber: mobileNumber?.trim(),
             dateOfBirth,
             password: hashedPassword,
             isEmailVerified: false,
         });
         return res.status(201).json({
-            message: message_1.messages.userRegistered,
+            message: message_1.SUCCESS_RESPONSE.userRegistered,
             code: 201,
             data: sanitizeUser(user),
         });
@@ -117,41 +120,58 @@ exports.signup = signup;
 const sendOtp = async (req, res, next) => {
     try {
         const { email } = req.body;
-        if (!email)
-            return res
-                .status(400)
-                .json({ message: message_1.messages.emailRequired, code: 400 });
+        if (!email) {
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.emailRequired,
+                code: 400,
+            });
+        }
         const user = await userModels_1.default.findOne({ email });
-        if (!user)
-            return res
-                .status(404)
-                .json({ message: message_1.messages.userNotFound, code: 404 });
+        if (!user) {
+            return res.status(404).json({
+                message: message_1.ERROR_RESPONSE.userNotFound,
+                code: 404,
+            });
+        }
         await generateAndSendOTP(user);
-        return res.status(200).json({ message: message_1.messages.otpSent, code: 200 });
+        return res.status(200).json({
+            message: message_1.SUCCESS_RESPONSE.otpSent,
+            code: 200,
+        });
     }
     catch (error) {
         next(error);
     }
 };
 exports.sendOtp = sendOtp;
-exports.resendOtp = exports.sendOtp;
 const verifyOtp = async (req, res, next) => {
     try {
         const { email, OTP } = req.body;
-        if (!email || !OTP)
-            return res
-                .status(400)
-                .json({ message: message_1.messages.emailOtpRequired, code: 400 });
+        if (!email || !OTP) {
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.emailOtpRequired,
+                code: 400,
+            });
+        }
         const user = await userModels_1.default.findOne({ email });
         if (!user || user.OTP !== OTP) {
-            return res.status(400).json({ message: message_1.messages.invalidOtp, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.invalidOtp,
+                code: 400,
+            });
         }
         if (!user.otpExpires || (0, moment_1.default)().isAfter(user.otpExpires)) {
-            return res.status(400).json({ message: message_1.messages.otpExpired, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.otpExpired,
+                code: 400,
+            });
         }
         user.isEmailVerified = true;
         await user.save();
-        return res.status(200).json({ message: message_1.messages.otpVerified, code: 200 });
+        return res.status(200).json({
+            message: message_1.SUCCESS_RESPONSE.otpVerified,
+            code: 200,
+        });
     }
     catch (error) {
         next(error);
@@ -165,7 +185,7 @@ const checkEmail = async (req, res, next) => {
         if (user) {
             return res.status(200).json({
                 exists: true,
-                message: message_1.messages.emailAlreadyExists,
+                message: message_1.ERROR_RESPONSE.emailAlreadyExists,
                 code: 200,
                 user,
             });
@@ -173,7 +193,7 @@ const checkEmail = async (req, res, next) => {
         else {
             return res.status(404).json({
                 exists: false,
-                message: message_1.messages.emailSignup,
+                message: message_1.ERROR_RESPONSE.emailSignup,
                 code: 404,
             });
         }
@@ -187,31 +207,35 @@ const loginWithEmail = async (req, res, next) => {
     try {
         const { email, password, loginType } = req.body;
         if (loginType !== "0") {
-            return res
-                .status(400)
-                .json({ message: message_1.messages.invalidLogin, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.invalidLogin,
+                code: 400,
+            });
         }
         const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
-        if (!user)
-            return res
-                .status(404)
-                .json({ message: message_1.messages.userNotFound, code: 404 });
+        if (!user) {
+            return res.status(404).json({
+                message: message_1.ERROR_RESPONSE.userNotFound,
+                code: 404,
+            });
+        }
         const isMatch = await bcrypt_1.default.compare(password, user.password);
         if (!isMatch) {
-            return res
-                .status(401)
-                .json({ message: message_1.messages.invalidCredentials, code: 401 });
+            return res.status(401).json({
+                message: message_1.ERROR_RESPONSE.invalidCredentials,
+                code: 401,
+            });
         }
         const token = generateToken(user);
         if (!user.isEmailVerified) {
             return res.status(403).json({
-                message: message_1.messages.emailNotVerified,
+                message: message_1.ERROR_RESPONSE.emailNotVerified,
                 code: 403,
                 isEmailVerified: false,
             });
         }
         return res.status(200).json({
-            message: message_1.messages.loginSuccessful,
+            message: message_1.SUCCESS_RESPONSE.loginSuccessful,
             code: 200,
             token,
             data: sanitizeUser(user),
@@ -225,24 +249,28 @@ exports.loginWithEmail = loginWithEmail;
 const loginWithMobile = async (req, res, next) => {
     try {
         const { mobileNumber, loginType } = req.body;
-        console.log("number", loginType, "number", mobileNumber);
         if (loginType !== "1") {
-            return res
-                .status(400)
-                .json({ message: message_1.messages.invalidLogin, code: 400 });
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.invalidLogin,
+                code: 400,
+            });
         }
-        const user = await userModels_1.default.findOne({ mobileNumber: mobileNumber.trim() });
-        if (!user)
-            return res
-                .status(404)
-                .json({ message: message_1.messages.userNotFound, code: 404 });
+        const user = await userModels_1.default.findOne({
+            mobileNumber: mobileNumber.trim(),
+        });
+        if (!user) {
+            return res.status(404).json({
+                message: message_1.ERROR_RESPONSE.userNotFound,
+                code: 404,
+            });
+        }
         const otp = (0, OTP_1.generateOTP)();
         user.OTP = otp;
         user.otpExpires = (0, moment_1.default)().add(5, "minutes").toDate();
         await user.save();
-        //await sendOTP(user.mobileNumber, otp);
+        // await sendOTP(user.mobileNumber, otp);
         return res.status(200).json({
-            message: message_1.messages.mobileOtpSent,
+            message: message_1.SUCCESS_RESPONSE.mobileOtpSent,
             code: 200,
             userId: user._id,
         });
@@ -265,10 +293,10 @@ const loginWithSocial = async (req, res, next) => {
             },
         });
         if (!user) {
-            user = await userModels_1.default.findOne({ email: email });
+            user = await userModels_1.default.findOne({ email });
             if (!user) {
                 return res.status(404).json({
-                    message: message_1.messages.userSignup,
+                    message: message_1.ERROR_RESPONSE.userSignup,
                     code: 404,
                 });
             }
@@ -278,14 +306,14 @@ const loginWithSocial = async (req, res, next) => {
                 user.socialIds.push({
                     id: socialId,
                     type: loginType,
-                    email: email.toLowerCase().trim(),
+                    email: email,
                 });
                 await user.save();
             }
         }
         const token = generateToken(user);
         return res.status(200).json({
-            message: message_1.messages.socialLogin,
+            message: message_1.SUCCESS_RESPONSE.socialLogin,
             code: 200,
             token,
             data: sanitizeUser(user),

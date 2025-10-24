@@ -90,5 +90,5 @@ export const loginWihMobileValidation = Joi.object({
 export const loginWithSocialValidation = Joi.object({
   loginType: Joi.string().required(),
   email: Joi.string().required(),
-  socialId: Joi.string().required()
+ socialId: Joi.string().required()
 })

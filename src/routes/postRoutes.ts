@@ -7,8 +7,8 @@ import {
   updatePost,
   deletePost,
 } from "../controllers/postControllers";
-import {validateRequest} from '../middlewares/userValidation';
-import {createPostValidation, getPostByUserValidation} from "../utils/postValidation"
+import {validateRequest} from '../validations/userValidation';
+import {createPostValidation, getPostByUserValidation} from "../validations/postValidation"
 
 const router = express.Router();
 

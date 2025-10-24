@@ -19,7 +19,7 @@ const fileFilter = (_req, file, cb) => {
         cb(null, true);
     }
     else {
-        cb(new Error(message_1.messages.fileUploadError));
+        cb(new Error(message_1.ERROR_RESPONSE.fileUploadError));
     }
 };
 const storage = multer_1.default.diskStorage({

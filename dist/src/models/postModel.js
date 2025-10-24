@@ -38,7 +38,7 @@ const postSchema = new mongoose_1.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     files: [{ type: String }],
-    createdBy: {
+    userId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "users",
         required: true,
