@@ -117,12 +117,6 @@ exports.signup = signup;
 const sendOtp = async (req, res, next) => {
     try {
         const { email } = req.body;
-        if (!email) {
-            return res.status(400).json({
-                message: message_1.ERROR_RESPONSE.emailRequired,
-                code: 400,
-            });
-        }
         const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (!user) {
             return res.status(404).json({
@@ -144,12 +138,6 @@ exports.sendOtp = sendOtp;
 const verifyOtp = async (req, res, next) => {
     try {
         const { email, OTP } = req.body;
-        if (!email || !OTP) {
-            return res.status(400).json({
-                message: message_1.ERROR_RESPONSE.emailOtpRequired,
-                code: 400,
-            });
-        }
         const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (!user || user.OTP !== OTP) {
             return res.status(400).json({
@@ -178,7 +166,7 @@ exports.verifyOtp = verifyOtp;
 const checkEmail = async (req, res, next) => {
     try {
         const { email } = req.body;
-        const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
+        const user = await userModels_1.default.findOne({ email: email });
         if (user) {
             return res.status(200).json({
                 exists: true,

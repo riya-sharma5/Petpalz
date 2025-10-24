@@ -96,13 +96,6 @@ export const sendOtp = async (req: Request, res: Response, next: NextFunction) =
   try {
     const { email } = req.body;
 
-    if (!email) {
-      return res.status(400).json({
-        message: ERROR_RESPONSE.emailRequired,
-        code: 400,
-      });
-    }
-
     const user = await userModel.findOne({ email: email.toLowerCase().trim() });
     if (!user) {
       return res.status(404).json({
@@ -125,13 +118,6 @@ export const sendOtp = async (req: Request, res: Response, next: NextFunction) =
 export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, OTP } = req.body;
-
-    if (!email || !OTP) {
-      return res.status(400).json({
-        message: ERROR_RESPONSE.emailOtpRequired,
-        code: 400,
-      });
-    }
 
     const user = await userModel.findOne({ email: email.toLowerCase().trim() });
     if (!user || user.OTP !== OTP) {
@@ -164,7 +150,7 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
 export const checkEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
-    const user = await userModel.findOne({ email: email.toLowerCase().trim() });
+    const user = await userModel.findOne({ email: email });
 
     if (user) {
       return res.status(200).json({
