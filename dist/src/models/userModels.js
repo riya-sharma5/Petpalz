@@ -33,17 +33,8 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginType = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-var loginType;
-(function (loginType) {
-    loginType["email"] = "0";
-    loginType["mobile-number"] = "1";
-    loginType["google"] = "2";
-    loginType["facebook"] = "3";
-    loginType["twitter"] = "4";
-    loginType["apple"] = "5";
-})(loginType || (exports.loginType = loginType = {}));
+const enum_1 = require("../utils/enum");
 const userSchema = new mongoose_1.Schema({
     userName: {
         type: String,
@@ -87,7 +78,7 @@ const userSchema = new mongoose_1.Schema({
     socialIds: [
         {
             id: { type: String, required: true },
-            type: { type: String, enum: Object.values(loginType), required: true },
+            type: { type: String, enum: Object.values(enum_1.loginType), required: true },
             email: { type: String, required: true },
         },
     ],

@@ -1,12 +1,5 @@
 import mongoose, { Document } from "mongoose";
-export declare enum loginType {
-    "email" = "0",
-    "mobile-number" = "1",
-    "google" = "2",
-    "facebook" = "3",
-    "twitter" = "4",
-    "apple" = "5"
-}
+import { loginType } from "../utils/enum";
 interface SocialId {
     id: string;
     type: loginType;

@@ -33,13 +33,8 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likeType = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-var likeType;
-(function (likeType) {
-    likeType["Post"] = "0";
-    likeType["Comment"] = "1";
-})(likeType || (exports.likeType = likeType = {}));
+const enum_1 = require("../utils/enum");
 const likeSchema = new mongoose_1.Schema({
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
@@ -54,7 +49,7 @@ const likeSchema = new mongoose_1.Schema({
     },
     type: {
         type: String,
-        enum: likeType,
+        enum: enum_1.likeType,
         required: true,
     },
 }, {

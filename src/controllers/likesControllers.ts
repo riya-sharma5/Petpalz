@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import likeModel, { likeType } from "../models/likesModel";
+import likeModel from '../models/likesModel'
+ import { likeType } from "../utils/enum";
 import postModel from "../models/postModel";
 import commentModel from "../models/commentsModel";
 import { SUCCESS_RESPONSE, ERROR_RESPONSE } from "../utils/message";

@@ -4,7 +4,7 @@ export interface IComment extends Document {
   postId: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   text: string;
-  parentCommentId?: mongoose.Types.ObjectId | null;
+  parentCommentId?: mongoose.Types.ObjectId;
   likeCount: number;
   createdAt: Date;
   updatedAt: Date;

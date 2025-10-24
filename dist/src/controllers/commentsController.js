@@ -99,7 +99,7 @@ const deleteComment = async (req, res, next) => {
 exports.deleteComment = deleteComment;
 const getCommentsByPost = async (req, res, next) => {
     try {
-        const { postId } = req.body;
+        const { id: postId } = req.params;
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;

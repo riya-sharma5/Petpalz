@@ -1,8 +1,5 @@
 import mongoose, { Document, ObjectId } from "mongoose";
-export declare enum likeType {
-    Post = "0",
-    Comment = "1"
-}
+import { likeType } from "../utils/enum";
 export interface ILike extends Document {
     userId: ObjectId;
     entityId?: ObjectId;

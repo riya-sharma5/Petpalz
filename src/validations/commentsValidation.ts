@@ -18,6 +18,6 @@ export const deleteCommentValidation = Joi.object({
   userId: Joi.string().required(),
 });
 
-export const getCommentValidation = Joi.object({
-  postId: Joi.string().required(),
-});
+// export const getCommentValidation = Joi.object({
+//   postId: Joi.string().required(),
+// });

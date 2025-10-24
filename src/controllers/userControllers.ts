@@ -3,23 +3,24 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import moment from "moment";
-import userModel, { loginType } from "../models/userModels";
+import userModel from "../models/userModels";
+import { loginType } from "../utils/enum";
 import { generateOTP, sendOTP } from "../utils/OTP";
 import { SUCCESS_RESPONSE, ERROR_RESPONSE } from "../utils/message";
 
 dotenv.config();
 
+if (!process.env.PRIVATE_KEY) {
+  throw new Error("Missing PRIVATE_KEY in environment variables.");
+}
+
 const generateToken = (user: any) => {
   return jwt.sign(
     { _id: user._id, email: user.email, userName: user.userName },
     process.env.PRIVATE_KEY as string,
-    { expiresIn: (process.env.ACCESS_TOKEN_EXPIRY as "1d") || "1d" }
+    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY as '1d' || "1d" }
   );
 };
-
-if (!process.env.PRIVATE_KEY) {
-  throw new Error("Missing PRIVATE_KEY in environment variables.");
-}
 
 const sanitizeUser = (user: any) => {
   const obj = user.toObject();
@@ -38,21 +39,9 @@ const generateAndSendOTP = async (user: any) => {
   await sendOTP(user.email, otp);
 };
 
-export const signup = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const signup = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let {
-      userName,
-      fullName,
-      email,
-      mobileNumber,
-      dateOfBirth,
-      password,
-      confirmPassword,
-    } = req.body;
+    let { userName, fullName, email, mobileNumber, dateOfBirth, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).json({
@@ -61,9 +50,7 @@ export const signup = async (
       });
     }
 
-    const emailExists = await userModel.findOne({
-      email: email.toLowerCase().trim(),
-    });
+    const emailExists = await userModel.findOne({ email: email.toLowerCase().trim() });
     if (emailExists) {
       return res.status(400).json({
         message: ERROR_RESPONSE.emailAlreadyExists,
@@ -71,9 +58,7 @@ export const signup = async (
       });
     }
 
-    const usernameExists = await userModel.findOne({
-      userName: userName.trim(),
-    });
+    const usernameExists = await userModel.findOne({ userName: userName.trim() });
     if (usernameExists) {
       return res.status(400).json({
         message: ERROR_RESPONSE.usernameAlreadyExists,
@@ -90,7 +75,7 @@ export const signup = async (
     const user = await userModel.create({
       userName: userName.trim(),
       fullName: fullName.trim(),
-      email,
+      email: email.toLowerCase().trim(),
       mobileNumber: mobileNumber?.trim(),
       dateOfBirth,
       password: hashedPassword,
@@ -107,11 +92,7 @@ export const signup = async (
   }
 };
 
-export const sendOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const sendOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
 
@@ -122,7 +103,7 @@ export const sendOtp = async (
       });
     }
 
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email: email.toLowerCase().trim() });
     if (!user) {
       return res.status(404).json({
         message: ERROR_RESPONSE.userNotFound,
@@ -141,11 +122,7 @@ export const sendOtp = async (
   }
 };
 
-export const verifyOtp = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, OTP } = req.body;
 
@@ -156,7 +133,7 @@ export const verifyOtp = async (
       });
     }
 
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email: email.toLowerCase().trim() });
     if (!user || user.OTP !== OTP) {
       return res.status(400).json({
         message: ERROR_RESPONSE.invalidOtp,
@@ -183,11 +160,8 @@ export const verifyOtp = async (
   }
 };
 
-export const checkEmail = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+
+export const checkEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email } = req.body;
     const user = await userModel.findOne({ email: email.toLowerCase().trim() });
@@ -211,15 +185,11 @@ export const checkEmail = async (
   }
 };
 
-export const loginWithEmail = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const loginWithEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password, loginType } = req.body;
+    const { email, password, loginType: type } = req.body;
 
-    if (loginType !== "0") {
+    if (type !== loginType.email) {
       return res.status(400).json({
         message: ERROR_RESPONSE.invalidLogin,
         code: 400,
@@ -242,8 +212,6 @@ export const loginWithEmail = async (
       });
     }
 
-    const token = generateToken(user);
-
     if (!user.isEmailVerified) {
       return res.status(403).json({
         message: ERROR_RESPONSE.emailNotVerified,
@@ -251,6 +219,8 @@ export const loginWithEmail = async (
         isEmailVerified: false,
       });
     }
+
+    const token = generateToken(user);
 
     return res.status(200).json({
       message: SUCCESS_RESPONSE.loginSuccessful,
@@ -263,25 +233,18 @@ export const loginWithEmail = async (
   }
 };
 
-export const loginWithMobile = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const loginWithMobile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { mobileNumber, loginType } = req.body;
+    const { mobileNumber, loginType: type } = req.body;
 
-    if (loginType !== "1") {
+    if (type !== loginType["mobile-number"]) {
       return res.status(400).json({
         message: ERROR_RESPONSE.invalidLogin,
         code: 400,
       });
     }
 
-    const user = await userModel.findOne({
-      mobileNumber: mobileNumber.trim(),
-    });
-
+    const user = await userModel.findOne({ mobileNumber: mobileNumber.trim() });
     if (!user) {
       return res.status(404).json({
         message: ERROR_RESPONSE.userNotFound,
@@ -306,26 +269,30 @@ export const loginWithMobile = async (
   }
 };
 
-export const loginWithSocial = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+
+export const loginWithSocial = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, loginType, socialId } = req.body;
+    const { email, loginType: type, socialId } = req.body;
+
+    if (!Object.values(loginType).includes(type)) {
+      return res.status(400).json({
+        message: ERROR_RESPONSE.invalidLogin,
+        code: 400,
+      });
+    }
 
     let user = await userModel.findOne({
       socialIds: {
         $elemMatch: {
           id: socialId,
-          type: loginType,
-          email: email,
+          type,
+          email,
         },
       },
     });
 
     if (!user) {
-      user = await userModel.findOne({ email });
+      user = await userModel.findOne({ email: email.toLowerCase().trim() });
 
       if (!user) {
         return res.status(404).json({
@@ -334,18 +301,11 @@ export const loginWithSocial = async (
         });
       }
 
-      const alreadyLinked = user.socialIds?.some(
-        (s: any) => s.id === socialId && s.type === loginType
-      );
+      const alreadyLinked = user.socialIds?.some(s => s.id === socialId && s.type === type);
 
       if (!alreadyLinked) {
         user.socialIds = user.socialIds || [];
-        user.socialIds.push({
-          id: socialId,
-          type: loginType,
-          email: email,
-        });
-
+        user.socialIds.push({ id: socialId, type, email });
         await user.save();
       }
     }

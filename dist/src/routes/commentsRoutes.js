@@ -11,6 +11,6 @@ const router = express_1.default.Router();
 router.post('/add-comment', (0, userValidation_1.validateRequest)(commentsValidation_1.addCommentValidation), commentsController_1.addComment);
 router.put('/update-comment', (0, userValidation_1.validateRequest)(commentsValidation_1.updateCommentValidation), commentsController_1.updateComment);
 router.delete('/delete-comment', (0, userValidation_1.validateRequest)(commentsValidation_1.deleteCommentValidation), commentsController_1.deleteComment);
-router.get('/get-comments', (0, userValidation_1.validateRequest)(commentsValidation_1.getCommentValidation), commentsController_1.getCommentsByPost);
+router.get('/:id', commentsController_1.getCommentsByPost);
 exports.default = router;
 //# sourceMappingURL=commentsRoutes.js.map

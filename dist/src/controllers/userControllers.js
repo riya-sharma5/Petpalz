@@ -42,15 +42,16 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
 const moment_1 = __importDefault(require("moment"));
 const userModels_1 = __importDefault(require("../models/userModels"));
+const enum_1 = require("../utils/enum");
 const OTP_1 = require("../utils/OTP");
 const message_1 = require("../utils/message");
 dotenv.config();
-const generateToken = (user) => {
-    return jsonwebtoken_1.default.sign({ _id: user._id, email: user.email, userName: user.userName }, process.env.PRIVATE_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1d" });
-};
 if (!process.env.PRIVATE_KEY) {
     throw new Error("Missing PRIVATE_KEY in environment variables.");
 }
+const generateToken = (user) => {
+    return jsonwebtoken_1.default.sign({ _id: user._id, email: user.email, userName: user.userName }, process.env.PRIVATE_KEY, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1d" });
+};
 const sanitizeUser = (user) => {
     const obj = user.toObject();
     delete obj.password;
@@ -68,25 +69,21 @@ const generateAndSendOTP = async (user) => {
 };
 const signup = async (req, res, next) => {
     try {
-        let { userName, fullName, email, mobileNumber, dateOfBirth, password, confirmPassword, } = req.body;
+        let { userName, fullName, email, mobileNumber, dateOfBirth, password, confirmPassword } = req.body;
         if (password !== confirmPassword) {
             return res.status(400).json({
                 message: message_1.ERROR_RESPONSE.passwordNotMatched,
                 code: 400,
             });
         }
-        const emailExists = await userModels_1.default.findOne({
-            email: email.toLowerCase().trim(),
-        });
+        const emailExists = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (emailExists) {
             return res.status(400).json({
                 message: message_1.ERROR_RESPONSE.emailAlreadyExists,
                 code: 400,
             });
         }
-        const usernameExists = await userModels_1.default.findOne({
-            userName: userName.trim(),
-        });
+        const usernameExists = await userModels_1.default.findOne({ userName: userName.trim() });
         if (usernameExists) {
             return res.status(400).json({
                 message: message_1.ERROR_RESPONSE.usernameAlreadyExists,
@@ -100,7 +97,7 @@ const signup = async (req, res, next) => {
         const user = await userModels_1.default.create({
             userName: userName.trim(),
             fullName: fullName.trim(),
-            email,
+            email: email.toLowerCase().trim(),
             mobileNumber: mobileNumber?.trim(),
             dateOfBirth,
             password: hashedPassword,
@@ -126,7 +123,7 @@ const sendOtp = async (req, res, next) => {
                 code: 400,
             });
         }
-        const user = await userModels_1.default.findOne({ email });
+        const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (!user) {
             return res.status(404).json({
                 message: message_1.ERROR_RESPONSE.userNotFound,
@@ -153,7 +150,7 @@ const verifyOtp = async (req, res, next) => {
                 code: 400,
             });
         }
-        const user = await userModels_1.default.findOne({ email });
+        const user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
         if (!user || user.OTP !== OTP) {
             return res.status(400).json({
                 message: message_1.ERROR_RESPONSE.invalidOtp,
@@ -205,8 +202,8 @@ const checkEmail = async (req, res, next) => {
 exports.checkEmail = checkEmail;
 const loginWithEmail = async (req, res, next) => {
     try {
-        const { email, password, loginType } = req.body;
-        if (loginType !== "0") {
+        const { email, password, loginType: type } = req.body;
+        if (type !== enum_1.loginType.email) {
             return res.status(400).json({
                 message: message_1.ERROR_RESPONSE.invalidLogin,
                 code: 400,
@@ -226,7 +223,6 @@ const loginWithEmail = async (req, res, next) => {
                 code: 401,
             });
         }
-        const token = generateToken(user);
         if (!user.isEmailVerified) {
             return res.status(403).json({
                 message: message_1.ERROR_RESPONSE.emailNotVerified,
@@ -234,6 +230,7 @@ const loginWithEmail = async (req, res, next) => {
                 isEmailVerified: false,
             });
         }
+        const token = generateToken(user);
         return res.status(200).json({
             message: message_1.SUCCESS_RESPONSE.loginSuccessful,
             code: 200,
@@ -248,16 +245,14 @@ const loginWithEmail = async (req, res, next) => {
 exports.loginWithEmail = loginWithEmail;
 const loginWithMobile = async (req, res, next) => {
     try {
-        const { mobileNumber, loginType } = req.body;
-        if (loginType !== "1") {
+        const { mobileNumber, loginType: type } = req.body;
+        if (type !== enum_1.loginType["mobile-number"]) {
             return res.status(400).json({
                 message: message_1.ERROR_RESPONSE.invalidLogin,
                 code: 400,
             });
         }
-        const user = await userModels_1.default.findOne({
-            mobileNumber: mobileNumber.trim(),
-        });
+        const user = await userModels_1.default.findOne({ mobileNumber: mobileNumber.trim() });
         if (!user) {
             return res.status(404).json({
                 message: message_1.ERROR_RESPONSE.userNotFound,
@@ -282,32 +277,34 @@ const loginWithMobile = async (req, res, next) => {
 exports.loginWithMobile = loginWithMobile;
 const loginWithSocial = async (req, res, next) => {
     try {
-        const { email, loginType, socialId } = req.body;
+        const { email, loginType: type, socialId } = req.body;
+        if (!Object.values(enum_1.loginType).includes(type)) {
+            return res.status(400).json({
+                message: message_1.ERROR_RESPONSE.invalidLogin,
+                code: 400,
+            });
+        }
         let user = await userModels_1.default.findOne({
             socialIds: {
                 $elemMatch: {
                     id: socialId,
-                    type: loginType,
-                    email: email,
+                    type,
+                    email,
                 },
             },
         });
         if (!user) {
-            user = await userModels_1.default.findOne({ email });
+            user = await userModels_1.default.findOne({ email: email.toLowerCase().trim() });
             if (!user) {
                 return res.status(404).json({
                     message: message_1.ERROR_RESPONSE.userSignup,
                     code: 404,
                 });
             }
-            const alreadyLinked = user.socialIds?.some((s) => s.id === socialId && s.type === loginType);
+            const alreadyLinked = user.socialIds?.some(s => s.id === socialId && s.type === type);
             if (!alreadyLinked) {
                 user.socialIds = user.socialIds || [];
-                user.socialIds.push({
-                    id: socialId,
-                    type: loginType,
-                    email: email,
-                });
+                user.socialIds.push({ id: socialId, type, email });
                 await user.save();
             }
         }
