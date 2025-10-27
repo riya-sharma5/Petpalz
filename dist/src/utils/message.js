@@ -19,6 +19,10 @@ exports.SUCCESS_RESPONSE = {
     commentUpdated: "Comment updated successfully",
     commentDeleted: "Comment deleted successfully",
     commentsFetched: "Comments fetched successfully",
+    petAdded: "Pet added successfully",
+    petUpdated: "Pet updated successfully",
+    petDeleted: "Pet deleted successfully",
+    petsFetched: "Pets fetched successfully",
 };
 exports.ERROR_RESPONSE = {
     fileUploadError: "Only image and video files are allowed",
@@ -45,5 +49,8 @@ exports.ERROR_RESPONSE = {
     cannotEditAfter24h: "Cannot edit comment after 24 hours",
     postIdRequired: "Post ID is required",
     commentIdRequired: "Comment ID is required",
+    petNotFound: "Pet not found",
+    noPetsFound: "No pets found for this user",
+    missingRequiredFields: "Some required fields are missing",
 };
 //# sourceMappingURL=message.js.map

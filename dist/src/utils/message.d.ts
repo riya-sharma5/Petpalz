@@ -16,6 +16,10 @@ export declare const SUCCESS_RESPONSE: {
     commentUpdated: string;
     commentDeleted: string;
     commentsFetched: string;
+    petAdded: string;
+    petUpdated: string;
+    petDeleted: string;
+    petsFetched: string;
 };
 export declare const ERROR_RESPONSE: {
     fileUploadError: string;
@@ -42,5 +46,8 @@ export declare const ERROR_RESPONSE: {
     cannotEditAfter24h: string;
     postIdRequired: string;
     commentIdRequired: string;
+    petNotFound: string;
+    noPetsFound: string;
+    missingRequiredFields: string;
 };
 //# sourceMappingURL=message.d.ts.map

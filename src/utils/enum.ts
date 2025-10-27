@@ -3,7 +3,16 @@ export enum likeType {
   Comment = "1",
 }
 
+export enum Species{
+    Cat = "0",
+    Dog = "1"
+}
 
+export enum Gender {
+  Male = "0",
+  Female = "1",
+  Other = "2",
+}
 
 export enum loginType {
   "email" = "0",

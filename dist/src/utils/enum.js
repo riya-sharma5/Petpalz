@@ -1,11 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginType = exports.likeType = void 0;
+exports.loginType = exports.Gender = exports.Species = exports.likeType = void 0;
 var likeType;
 (function (likeType) {
     likeType["Post"] = "0";
     likeType["Comment"] = "1";
 })(likeType || (exports.likeType = likeType = {}));
+var Species;
+(function (Species) {
+    Species["Cat"] = "0";
+    Species["Dog"] = "1";
+})(Species || (exports.Species = Species = {}));
+var Gender;
+(function (Gender) {
+    Gender["Male"] = "0";
+    Gender["Female"] = "1";
+    Gender["Other"] = "2";
+})(Gender || (exports.Gender = Gender = {}));
 var loginType;
 (function (loginType) {
     loginType["email"] = "0";

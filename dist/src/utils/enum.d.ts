@@ -2,6 +2,15 @@ export declare enum likeType {
     Post = "0",
     Comment = "1"
 }
+export declare enum Species {
+    Cat = "0",
+    Dog = "1"
+}
+export declare enum Gender {
+    Male = "0",
+    Female = "1",
+    Other = "2"
+}
 export declare enum loginType {
     "email" = "0",
     "mobile-number" = "1",
