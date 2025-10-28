@@ -20,6 +20,10 @@ export declare const SUCCESS_RESPONSE: {
     petUpdated: string;
     petDeleted: string;
     petsFetched: string;
+    messageSent: string;
+    messagesFetched: string;
+    messagesMarkedRead: string;
+    messageDeleted: string;
 };
 export declare const ERROR_RESPONSE: {
     fileUploadError: string;
@@ -49,5 +53,7 @@ export declare const ERROR_RESPONSE: {
     petNotFound: string;
     noPetsFound: string;
     missingRequiredFields: string;
+    messageNotFound: string;
+    chatNotFound: string;
 };
 //# sourceMappingURL=message.d.ts.map

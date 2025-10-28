@@ -23,6 +23,10 @@ exports.SUCCESS_RESPONSE = {
     petUpdated: "Pet updated successfully",
     petDeleted: "Pet deleted successfully",
     petsFetched: "Pets fetched successfully",
+    messageSent: "Message sent successfully",
+    messagesFetched: "Chat history fetched successfully",
+    messagesMarkedRead: "Messages marked as read successfully",
+    messageDeleted: "Message deleted successfully",
 };
 exports.ERROR_RESPONSE = {
     fileUploadError: "Only image and video files are allowed",
@@ -52,5 +56,7 @@ exports.ERROR_RESPONSE = {
     petNotFound: "Pet not found",
     noPetsFound: "No pets found for this user",
     missingRequiredFields: "Some required fields are missing",
+    messageNotFound: "Message not found",
+    chatNotFound: "Chat not found",
 };
 //# sourceMappingURL=message.js.map

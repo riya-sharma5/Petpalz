@@ -45,6 +45,7 @@ class App {
     app;
     port;
     base_url;
+    server;
     constructor(port, base_url) {
         this.app = (0, express_1.default)();
         this.port = port;
@@ -52,16 +53,27 @@ class App {
     }
     async initialize() {
         try {
-            this.app.listen(this.port, () => {
+            this.initializeMiddlewares();
+            this.initializeRoutes();
+            this.server = this.app.listen(this.port, () => {
                 console.log(` Server is running on ${this.base_url}${this.port}`);
+            });
+            process.on('SIGINT', () => {
+                if (this.server) {
+                    this.server.close(() => {
+                        console.log('Server closed gracefully');
+                        process.exit(0);
+                    });
+                }
+                else {
+                    process.exit(0);
+                }
             });
         }
         catch (error) {
             console.log("Server Connection error:", error);
             process.exit();
         }
-        this.initializeMiddlewares();
-        this.initializeRoutes();
     }
     initializeMiddlewares() {
         this.app.use(express_1.default.json());

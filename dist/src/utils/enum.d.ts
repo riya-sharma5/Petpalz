@@ -2,6 +2,12 @@ export declare enum likeType {
     Post = "0",
     Comment = "1"
 }
+export declare enum MediaType {
+    NONE = "none",
+    IMAGE = "image",
+    VIDEO = "video",
+    PDF = "pdf"
+}
 export declare enum Species {
     Cat = "0",
     Dog = "1"

@@ -1,11 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginType = exports.Gender = exports.Species = exports.likeType = void 0;
+exports.loginType = exports.Gender = exports.Species = exports.MediaType = exports.likeType = void 0;
 var likeType;
 (function (likeType) {
     likeType["Post"] = "0";
     likeType["Comment"] = "1";
 })(likeType || (exports.likeType = likeType = {}));
+var MediaType;
+(function (MediaType) {
+    MediaType["NONE"] = "none";
+    MediaType["IMAGE"] = "image";
+    MediaType["VIDEO"] = "video";
+    MediaType["PDF"] = "pdf";
+})(MediaType || (exports.MediaType = MediaType = {}));
 var Species;
 (function (Species) {
     Species["Cat"] = "0";

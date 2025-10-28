@@ -2,33 +2,46 @@ import express from "express";
 import { Application } from "express";
 import * as dotenv from "dotenv";
 import routev1 from "./routes/routev1";
+import { Server } from "http";
 dotenv.config();
 
 export class App {
   public app: Application;
   public port: string | number;
   public base_url: string;
+  public server?: Server;
 
   constructor(port: string | number, base_url: string) {
     this.app = express();
     this.port = port;
     this.base_url = base_url;
   }
+ public async initialize(): Promise<void> {
+     try {
+    this.initializeMiddlewares();
+    this.initializeRoutes();
 
-  public async initialize(): Promise<void> {
-    try {
-      this.app.listen(this.port, () => {
-        console.log(` Server is running on ${this.base_url}${this.port}`);
-      });
+    
+    this.server = this.app.listen(this.port, () => {
+      console.log(` Server is running on ${this.base_url}${this.port}`);
+    });
+
+    process.on('SIGINT', () => {
+      if (this.server) {
+        this.server.close(() => {
+          console.log('Server closed gracefully');
+          process.exit(0);
+        });
+      } else {
+        process.exit(0);
+      }
+    });
+
     } catch (error) {
       console.log("Server Connection error:", error);
       process.exit();
     }
-
-    this.initializeMiddlewares();
-    this.initializeRoutes();
   }
-
   private initializeMiddlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
@@ -36,8 +49,7 @@ export class App {
   }
 
   private initializeRoutes(): void {
-     this.app.use("/api/v1", routev1);
-
+    this.app.use("/api/v1", routev1);
   }
 }
 

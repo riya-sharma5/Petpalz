@@ -3,6 +3,13 @@ export enum likeType {
   Comment = "1",
 }
 
+export enum MediaType {
+  NONE = "none",
+  IMAGE = "image",
+  VIDEO = "video",
+  PDF = "pdf",
+}
+
 export enum Species{
     Cat = "0",
     Dog = "1"

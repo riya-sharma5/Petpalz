@@ -20,6 +20,10 @@ export const SUCCESS_RESPONSE = {
   petUpdated: "Pet updated successfully",
   petDeleted: "Pet deleted successfully",
   petsFetched: "Pets fetched successfully",
+  messageSent: "Message sent successfully",
+  messagesFetched: "Chat history fetched successfully",
+  messagesMarkedRead: "Messages marked as read successfully",
+  messageDeleted: "Message deleted successfully",
 };
 
 export const ERROR_RESPONSE = {
@@ -50,4 +54,6 @@ export const ERROR_RESPONSE = {
   petNotFound: "Pet not found",
   noPetsFound: "No pets found for this user",
   missingRequiredFields: "Some required fields are missing",
+  messageNotFound: "Message not found",
+  chatNotFound: "Chat not found",
 };

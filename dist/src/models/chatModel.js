@@ -32,38 +32,24 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv = __importStar(require("dotenv"));
-const cors_1 = __importDefault(require("cors"));
-const http_1 = __importDefault(require("http"));
-const app_1 = require("./src/app");
-const database_1 = require("./src/databases/database");
-const webSocket_1 = require("./src/middlewares/webSocket");
-dotenv.config();
-const port = process.env.PORT || 7272;
-const base_url = process.env.BASE_URL || "";
-const myApp = new app_1.App(port, base_url);
-const app = (0, express_1.default)();
-const server = http_1.default.createServer(app);
-app.use((0, cors_1.default)({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-}));
-app.use(express_1.default.json({ limit: "16kb" }));
-app.use(express_1.default.urlencoded({ extended: true, limit: "16kb" }));
-app.use(express_1.default.static("public"));
-database_1.connectDB
-    .then(() => {
-    console.log("MongoDB connected");
-    myApp.initialize();
-    (0, webSocket_1.setupSocketIO)(server);
-})
-    .catch((error) => {
-    console.error("Server connection error:", error);
-    process.exit();
+const mongoose_1 = __importStar(require("mongoose"));
+const enum_1 = require("../utils/enum");
+const chatSchema = new mongoose_1.Schema({
+    senderId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    receiverId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    message: { type: String, default: "" },
+    mediaUrl: { type: String, default: "" },
+    mediaType: {
+        type: String,
+        enum: Object.values(enum_1.MediaType),
+        default: enum_1.MediaType.NONE,
+    },
+    isRead: { type: Boolean, default: false },
+}, {
+    timestamps: true,
+    collection: "Chat",
+    versionKey: false,
 });
-//# sourceMappingURL=server.js.map
+exports.default = mongoose_1.default.model("Chat", chatSchema);
+//# sourceMappingURL=chatModel.js.map

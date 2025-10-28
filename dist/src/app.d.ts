@@ -1,8 +1,10 @@
 import { Application } from "express";
+import { Server } from "http";
 export declare class App {
     app: Application;
     port: string | number;
     base_url: string;
+    server?: Server;
     constructor(port: string | number, base_url: string);
     initialize(): Promise<void>;
     private initializeMiddlewares;
