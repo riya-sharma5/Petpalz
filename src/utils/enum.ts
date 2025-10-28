@@ -10,6 +10,11 @@ export enum MediaType {
   PDF = "3",
 }
 
+export enum PlaceType {
+  HOSPITAL = "0",
+  PETSHOP = "1",
+}
+
 export enum Species{
     Cat = "0",
     Dog = "1"
