@@ -8,10 +8,10 @@ var likeType;
 })(likeType || (exports.likeType = likeType = {}));
 var MediaType;
 (function (MediaType) {
-    MediaType["NONE"] = "none";
-    MediaType["IMAGE"] = "image";
-    MediaType["VIDEO"] = "video";
-    MediaType["PDF"] = "pdf";
+    MediaType["NONE"] = "0";
+    MediaType["IMAGE"] = "1";
+    MediaType["VIDEO"] = "2";
+    MediaType["PDF"] = "3";
 })(MediaType || (exports.MediaType = MediaType = {}));
 var Species;
 (function (Species) {

@@ -3,10 +3,10 @@ export declare enum likeType {
     Comment = "1"
 }
 export declare enum MediaType {
-    NONE = "none",
-    IMAGE = "image",
-    VIDEO = "video",
-    PDF = "pdf"
+    NONE = "0",
+    IMAGE = "1",
+    VIDEO = "2",
+    PDF = "3"
 }
 export declare enum Species {
     Cat = "0",

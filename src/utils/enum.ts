@@ -4,10 +4,10 @@ export enum likeType {
 }
 
 export enum MediaType {
-  NONE = "none",
-  IMAGE = "image",
-  VIDEO = "video",
-  PDF = "pdf",
+  NONE = "0",
+  IMAGE = "1",
+  VIDEO = "2",
+  PDF = "3",
 }
 
 export enum Species{
