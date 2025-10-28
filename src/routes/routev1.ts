@@ -5,6 +5,7 @@ import likesRoute from "./likesRoutes";
 import petRoute from './petRoutes';
 import chatRoute from './chatRoutes'
 import commentsRoute from "./commentsRoutes";
+import placeRoute from "./placesRoutes";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/likes", likesRoute);
 router.use("/comments", commentsRoute);
 router.use("/pets", petRoute);
 router.use("/chat", chatRoute);
+router.use("/places", placeRoute);
 
 export default router;

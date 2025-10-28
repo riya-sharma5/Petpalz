@@ -9,8 +9,8 @@ import {
 
 const router = express.Router();
 
-router.post("/", addPlace);
-router.get("/", getPlaces);
+router.post("/add-place", addPlace);
+router.get("/get-places", getPlaces);
 router.get("/:id", getPlaceById);
 router.put("/:id", updatePlace);
 router.delete("/:id", deletePlace);

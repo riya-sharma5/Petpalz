@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginType = exports.Gender = exports.Species = exports.MediaType = exports.likeType = void 0;
+exports.loginType = exports.Gender = exports.Species = exports.PlaceType = exports.MediaType = exports.likeType = void 0;
 var likeType;
 (function (likeType) {
     likeType["Post"] = "0";
@@ -13,6 +13,11 @@ var MediaType;
     MediaType["VIDEO"] = "2";
     MediaType["PDF"] = "3";
 })(MediaType || (exports.MediaType = MediaType = {}));
+var PlaceType;
+(function (PlaceType) {
+    PlaceType["HOSPITAL"] = "0";
+    PlaceType["PETSHOP"] = "1";
+})(PlaceType || (exports.PlaceType = PlaceType = {}));
 var Species;
 (function (Species) {
     Species["Cat"] = "0";

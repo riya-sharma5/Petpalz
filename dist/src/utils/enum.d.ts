@@ -8,6 +8,10 @@ export declare enum MediaType {
     VIDEO = "2",
     PDF = "3"
 }
+export declare enum PlaceType {
+    HOSPITAL = "0",
+    PETSHOP = "1"
+}
 export declare enum Species {
     Cat = "0",
     Dog = "1"
