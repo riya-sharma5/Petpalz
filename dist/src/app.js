@@ -1,51 +1,62 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
+// import express from "express";
+// import { Application } from "express";
+// import * as dotenv from "dotenv";
+// import routev1 from "./routes/routev1";
+// import { Server } from "http";
+// dotenv.config();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.App = void 0;
+// export class App {
+//   public app: Application;
+//   public port: string | number;
+//   public base_url: string;
+//   public server?: Server;
+//   constructor(port: string | number, base_url: string) {
+//     this.app = express();
+//     this.port = port;
+//     this.base_url = base_url;
+//   }
+//  public async initialize(): Promise<void> {
+//      try {
+//     this.initializeMiddlewares();
+//     this.initializeRoutes();
+//     this.server = this.app.listen(this.port, () => {
+//       console.log(` Server is running on ${this.base_url}${this.port}`);
+//     });
+//     process.on('SIGINT', () => {
+//       if (this.server) {
+//         this.server.close(() => {
+//           console.log('Server closed gracefully');
+//           process.exit(0);
+//         });
+//       } else {
+//         process.exit(0);
+//       }
+//     });
+//     } catch (error) {
+//       console.log("Server Connection error:", error);
+//       process.exit();
+//     }
+//   }
+//   private initializeMiddlewares(): void {
+//     this.app.use(express.json());
+//     this.app.use(express.urlencoded({ extended: true }));
+//     this.app.use("/uploads", express.static("uploads"));
+//   }
+//   private initializeRoutes(): void {
+//     this.app.use("/api/v1", routev1);
+//   }
+// }
 const express_1 = __importDefault(require("express"));
-const dotenv = __importStar(require("dotenv"));
 const routev1_1 = __importDefault(require("./routes/routev1"));
-dotenv.config();
 class App {
     app;
     port;
     base_url;
-    server;
     constructor(port, base_url) {
         this.app = (0, express_1.default)();
         this.port = port;
@@ -55,24 +66,11 @@ class App {
         try {
             this.initializeMiddlewares();
             this.initializeRoutes();
-            this.server = this.app.listen(this.port, () => {
-                console.log(` Server is running on ${this.base_url}${this.port}`);
-            });
-            process.on('SIGINT', () => {
-                if (this.server) {
-                    this.server.close(() => {
-                        console.log('Server closed gracefully');
-                        process.exit(0);
-                    });
-                }
-                else {
-                    process.exit(0);
-                }
-            });
+            // console.log("Express app initialized");
         }
         catch (error) {
-            console.log("Server Connection error:", error);
-            process.exit();
+            console.log("Server Initialization error:", error);
+            // process.exit(1);
         }
     }
     initializeMiddlewares() {

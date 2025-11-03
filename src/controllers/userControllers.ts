@@ -7,6 +7,9 @@ import userModel from "../models/userModels";
 import { loginType } from "../utils/enum";
 import { generateOTP, sendOTP } from "../utils/OTP";
 import { SUCCESS_RESPONSE, ERROR_RESPONSE } from "../utils/message";
+import chatModel from "../models/chatModel";
+import mongoose from "mongoose";
+//import webSocket from "../middlewares/webSocket"
 
 dotenv.config();
 
@@ -18,7 +21,7 @@ const generateToken = (user: any) => {
   return jwt.sign(
     { _id: user._id, email: user.email, userName: user.userName },
     process.env.PRIVATE_KEY as string,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRY as '1d' || "1d" }
+    { expiresIn: (process.env.ACCESS_TOKEN_EXPIRY as "1d") || "1d" }
   );
 };
 
@@ -39,9 +42,21 @@ const generateAndSendOTP = async (user: any) => {
   await sendOTP(user.email, otp);
 };
 
-export const signup = async (req: Request, res: Response, next: NextFunction) => {
+export const signup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    let { userName, fullName, email, mobileNumber, dateOfBirth, password, confirmPassword } = req.body;
+    let {
+      userName,
+      fullName,
+      email,
+      mobileNumber,
+      dateOfBirth,
+      password,
+      confirmPassword,
+    } = req.body;
 
     if (password !== confirmPassword) {
       return res.status(400).json({
@@ -50,7 +65,9 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
       });
     }
 
-    const emailExists = await userModel.findOne({ email: email.toLowerCase().trim() });
+    const emailExists = await userModel.findOne({
+      email: email.toLowerCase().trim(),
+    });
     if (emailExists) {
       return res.status(400).json({
         message: ERROR_RESPONSE.emailAlreadyExists,
@@ -58,7 +75,9 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
       });
     }
 
-    const usernameExists = await userModel.findOne({ userName: userName.trim() });
+    const usernameExists = await userModel.findOne({
+      userName: userName.trim(),
+    });
     if (usernameExists) {
       return res.status(400).json({
         message: ERROR_RESPONSE.usernameAlreadyExists,
@@ -92,7 +111,11 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-export const sendOtp = async (req: Request, res: Response, next: NextFunction) => {
+export const sendOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email } = req.body;
 
@@ -115,7 +138,11 @@ export const sendOtp = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
-export const verifyOtp = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyOtp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, OTP } = req.body;
 
@@ -146,8 +173,11 @@ export const verifyOtp = async (req: Request, res: Response, next: NextFunction)
   }
 };
 
-
-export const checkEmail = async (req: Request, res: Response, next: NextFunction) => {
+export const checkEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email } = req.body;
     const user = await userModel.findOne({ email: email });
@@ -171,10 +201,15 @@ export const checkEmail = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const loginWithEmail = async (req: Request, res: Response, next: NextFunction) => {
+export const loginWithEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password, loginType: type } = req.body;
 
+    console.log("hitted");
     if (type !== loginType.email) {
       return res.status(400).json({
         message: ERROR_RESPONSE.invalidLogin,
@@ -219,9 +254,14 @@ export const loginWithEmail = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-export const loginWithMobile = async (req: Request, res: Response, next: NextFunction) => {
+export const loginWithMobile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { mobileNumber, loginType: type } = req.body;
+    console.log("hitted");
 
     if (type !== loginType["mobile-number"]) {
       return res.status(400).json({
@@ -255,8 +295,11 @@ export const loginWithMobile = async (req: Request, res: Response, next: NextFun
   }
 };
 
-
-export const loginWithSocial = async (req: Request, res: Response, next: NextFunction) => {
+export const loginWithSocial = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, loginType: type, socialId } = req.body;
 
@@ -287,7 +330,9 @@ export const loginWithSocial = async (req: Request, res: Response, next: NextFun
         });
       }
 
-      const alreadyLinked = user.socialIds?.some(s => s.id === socialId && s.type === type);
+      const alreadyLinked = user.socialIds?.some(
+        (s) => s.id === socialId && s.type === type
+      );
 
       if (!alreadyLinked) {
         user.socialIds = user.socialIds || [];
@@ -308,3 +353,259 @@ export const loginWithSocial = async (req: Request, res: Response, next: NextFun
     next(error);
   }
 };
+
+// export const listUsers = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     let { page = 1, limit = 10, search = "" } = req.query;
+
+//     const pageNum = parseInt(page as string, 10);
+//     const limitNum = parseInt(limit as string, 10);
+
+//     const query: any = {};
+
+//     if (search && typeof search === "string" && search.trim() !== "") {
+//       const regex = new RegExp(search.trim(), "i");
+//       query.$or = [
+//         { userName: regex },
+//         { fullName: regex },
+//         { email: regex },
+//         { mobileNumber: regex },
+//       ];
+//     }
+
+//     const totalUsers = await userModel.countDocuments(query);
+//     const data = await userModel
+//       .find(query)
+//       .select("-password -OTP -otpExpires")
+//       .skip((pageNum - 1) * limitNum)
+//       .limit(limitNum);
+
+//     const totalPages = Math.ceil(totalUsers / limitNum);
+//     const nextHit = pageNum < totalPages;
+
+//     return res.status(200).json({
+//       message: "User list fetched successfully.",
+//       code: 200,
+//       data: {
+//         total: totalUsers,
+//         page: pageNum,
+//         limit: limitNum,
+//         totalPages,
+//         nextHit,
+//         data,
+//       },
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+export const listUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const currentUserId =  res.locals.user?._id;
+    let { page = 1, limit = 10, search = "" } = req.query;
+
+    const pageNum = parseInt(page as string, 10);
+    const limitNum = parseInt(limit as string, 10);
+
+    const query: any = {};
+
+    if (search && typeof search === "string" && search.trim() !== "") {
+      const regex = new RegExp(search.trim(), "i");
+      query.$or = [
+        { userName: regex },
+        { fullName: regex },
+        { email: regex },
+        { mobileNumber: regex },
+      ];
+    }
+
+    query._id = { $ne: currentUserId };
+
+    const totalUsers = await userModel.countDocuments(query);
+
+    const data = await userModel
+      .find(query)
+      .select("-password -OTP -otpExpires")
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum)
+      .lean();
+
+    const usersWithLastMsg = await Promise.all(
+      data.map(async (user) => {
+        const lastMsg = await chatModel
+          .findOne({
+            $or: [
+              { senderId: currentUserId, receiverId: user._id },
+              { senderId: user._id, receiverId: currentUserId },
+            ],
+          })
+          .select("message mediaUrl mediaType senderId receiverId createdAt isRead")
+          .lean();
+
+        return {
+          ...user,
+          lastMessage: lastMsg
+            ? {
+                message: lastMsg.message || (lastMsg.mediaUrl ? " Media" : ""),
+                mediaType: lastMsg.mediaType,
+                createdAt: (lastMsg as any).createdAt,
+                isSentByMe: String((lastMsg as any).senderId) === String(currentUserId),
+                isRead: (lastMsg as any).isRead,
+              }
+            : null,
+        };
+      })
+    );
+
+    const totalPages = Math.ceil(totalUsers / limitNum);
+    const nextHit = pageNum < totalPages;
+
+    return res.status(200).json({
+      message: "User list fetched successfully.",
+      code: 200,
+      data: {
+        total: totalUsers,
+        page: pageNum,
+        limit: limitNum,
+        totalPages,
+        nextHit,
+        data: usersWithLastMsg,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// export const listUsers = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const currentUserId = new mongoose.Types.ObjectId(res.locals.user?._id);
+//     let { page = 1, limit = 10, search = "" } = req.query;
+
+//     const pageNum = parseInt(page as string, 10);
+//     const limitNum = parseInt(limit as string, 10);
+
+//     const matchQuery: any = { _id: { $ne: currentUserId } };
+
+//     if (search && typeof search === "string" && search.trim() !== "") {
+//       const regex = new RegExp(search.trim(), "i");
+//       matchQuery.$or = [
+//         { userName: regex },
+//         { fullName: regex },
+//         { email: regex },
+//         { mobileNumber: regex },
+//       ];
+//     }
+
+//     const usersWithLastMsg = await userModel.aggregate([
+//       { $match: matchQuery },
+//       { $skip: (pageNum - 1) * limitNum },
+//       { $limit: limitNum },
+//       {
+//         $lookup: {
+//           from: "chats",
+//           let: { userId: "$_id" },
+//           pipeline: [
+//             {
+//               $match: {
+//                 $expr: {
+//                   $or: [
+//                     {
+//                       $and: [
+//                         { $eq: ["$senderId", "$$userId"] },
+//                         { $eq: ["$receiverId", currentUserId] },
+//                       ],
+//                     },
+//                     {
+//                       $and: [
+//                         { $eq: ["$receiverId", "$$userId"] },
+//                         { $eq: ["$senderId", currentUserId] },
+//                       ],
+//                     },
+//                   ],
+//                 },
+//               },
+//             },
+//             { $sort: { createdAt: -1 } },
+//             { $limit: 1 },
+//             {
+//               $project: {
+//                 message: 1,
+//                 mediaUrl: 1,
+//                 mediaType: 1,
+//                 senderId: 1,
+//                 receiverId: 1,
+//                 createdAt: 1,
+//                 isRead: 1,
+//               },
+//             },
+//           ],
+//           as: "lastMessage",
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$lastMessage",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $project: {
+//           password: 0,
+//           OTP: 0,
+//           otpExpires: 0,
+//           lastMessage: {
+//             message: {
+//               $ifNull: [
+//                 "$lastMessage.message",
+//                 {
+//                   $cond: [
+//                     { $ifNull: ["$lastMessage.mediaUrl", false] },
+//                     "Media",
+//                     null,
+//                   ],
+//                 },
+//               ],
+//             },
+//             mediaType: "$lastMessage.mediaType",
+//             createdAt: "$lastMessage.createdAt",
+//             isSentByMe: { $eq: ["$lastMessage.senderId", currentUserId] },
+//             isRead: "$lastMessage.isRead",
+//           },
+//         },
+//       },
+//     ]);
+
+//     const totalUsers = await userModel.countDocuments(matchQuery);
+//     const totalPages = Math.ceil(totalUsers / limitNum);
+//     const nextHit = pageNum < totalPages;
+
+//     return res.status(200).json({
+//       message: "User list fetched successfully.",
+//       code: 200,
+//       data: {
+//         total: totalUsers,
+//         page: pageNum,
+//         limit: limitNum,
+//         totalPages,
+//         nextHit,
+//         data: usersWithLastMsg,
+//       },
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };

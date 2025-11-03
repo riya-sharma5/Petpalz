@@ -35,21 +35,36 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const enum_1 = require("../utils/enum");
-const placeSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
-    type: { type: String, enum: Object.values(enum_1.PlaceType), required: true },
-    description: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    zipcode: { type: String, required: true },
-    address: { type: String, required: true },
-    coordinates: {
-        longitude: { type: Number, required: true },
-        latitude: { type: Number, required: true },
+const notificationSchema = new mongoose_1.Schema({
+    senderId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
     },
-    image: { type: [String], default: [] },
-    specialDiscounts: { type: String },
-}, { timestamps: true, collection: "places", versionKey: false });
-const placeModel = mongoose_1.default.model("places", placeSchema);
-exports.default = placeModel;
-//# sourceMappingURL=placesModel.js.map
+    receiverId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    type: {
+        type: String,
+        enum: Object.values(enum_1.NotificationType),
+        required: true,
+    },
+    content: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    isRead: {
+        type: Boolean,
+        default: false,
+    },
+}, {
+    timestamps: true,
+    collection: "Notification",
+    versionKey: false,
+});
+const Notification = mongoose_1.default.model("Notification", notificationSchema);
+exports.default = Notification;
+//# sourceMappingURL=notificationModel.js.map

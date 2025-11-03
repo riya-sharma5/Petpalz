@@ -1,47 +1,83 @@
-import express from "express";
-import { Application } from "express";
-import * as dotenv from "dotenv";
+// import express from "express";
+// import { Application } from "express";
+// import * as dotenv from "dotenv";
+// import routev1 from "./routes/routev1";
+// import { Server } from "http";
+// dotenv.config();
+
+// export class App {
+//   public app: Application;
+//   public port: string | number;
+//   public base_url: string;
+//   public server?: Server;
+
+//   constructor(port: string | number, base_url: string) {
+//     this.app = express();
+//     this.port = port;
+//     this.base_url = base_url;
+//   }
+//  public async initialize(): Promise<void> {
+//      try {
+//     this.initializeMiddlewares();
+//     this.initializeRoutes();
+
+    
+//     this.server = this.app.listen(this.port, () => {
+//       console.log(` Server is running on ${this.base_url}${this.port}`);
+//     });
+
+//     process.on('SIGINT', () => {
+//       if (this.server) {
+//         this.server.close(() => {
+//           console.log('Server closed gracefully');
+//           process.exit(0);
+//         });
+//       } else {
+//         process.exit(0);
+//       }
+//     });
+
+//     } catch (error) {
+//       console.log("Server Connection error:", error);
+//       process.exit();
+//     }
+//   }
+//   private initializeMiddlewares(): void {
+//     this.app.use(express.json());
+//     this.app.use(express.urlencoded({ extended: true }));
+//     this.app.use("/uploads", express.static("uploads"));
+//   }
+
+//   private initializeRoutes(): void {
+//     this.app.use("/api/v1", routev1);
+//   }
+// }
+
+import express, { Application } from "express";
 import routev1 from "./routes/routev1";
-import { Server } from "http";
-dotenv.config();
 
 export class App {
   public app: Application;
   public port: string | number;
   public base_url: string;
-  public server?: Server;
 
   constructor(port: string | number, base_url: string) {
     this.app = express();
     this.port = port;
     this.base_url = base_url;
   }
- public async initialize(): Promise<void> {
-     try {
-    this.initializeMiddlewares();
-    this.initializeRoutes();
 
-    
-    this.server = this.app.listen(this.port, () => {
-      console.log(` Server is running on ${this.base_url}${this.port}`);
-    });
-
-    process.on('SIGINT', () => {
-      if (this.server) {
-        this.server.close(() => {
-          console.log('Server closed gracefully');
-          process.exit(0);
-        });
-      } else {
-        process.exit(0);
-      }
-    });
-
+  public async initialize(): Promise<void> {
+    try {
+      this.initializeMiddlewares();
+      this.initializeRoutes();
+     // console.log("Express app initialized");
     } catch (error) {
-      console.log("Server Connection error:", error);
-      process.exit();
+      console.log("Server Initialization error:", error);
+     // process.exit(1);
     }
   }
+
   private initializeMiddlewares(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
@@ -52,4 +88,3 @@ export class App {
     this.app.use("/api/v1", routev1);
   }
 }
-

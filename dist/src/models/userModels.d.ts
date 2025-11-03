@@ -16,6 +16,7 @@ export interface IUser extends Document {
     OTP?: string;
     otpExpires?: Date;
     socialIds?: SocialId[];
+    createdAt: Date;
 }
 declare const userModel: mongoose.Model<IUser, {}, {}, {}, mongoose.Document<unknown, {}, IUser, {}, {}> & IUser & Required<{
     _id: unknown;

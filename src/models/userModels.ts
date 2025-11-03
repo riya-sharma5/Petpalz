@@ -18,6 +18,7 @@ export interface IUser extends Document {
   OTP?: string;
   otpExpires?: Date;
   socialIds?: SocialId[]; 
+  createdAt: Date;
 }
 
 const userSchema: Schema<IUser> = new Schema(

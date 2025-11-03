@@ -1,11 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginType = exports.Gender = exports.Species = exports.PlaceType = exports.MediaType = exports.likeType = void 0;
+exports.loginType = exports.Gender = exports.Species = exports.PlaceType = exports.MediaType = exports.NotificationType = exports.likeType = void 0;
 var likeType;
 (function (likeType) {
     likeType["Post"] = "0";
     likeType["Comment"] = "1";
 })(likeType || (exports.likeType = likeType = {}));
+var NotificationType;
+(function (NotificationType) {
+    NotificationType["MESSAGE"] = "0";
+    NotificationType["LIKE"] = "1";
+    NotificationType["COMMENT"] = "2";
+    //FOLLOW = "3",
+    NotificationType["SYSTEM"] = "4";
+})(NotificationType || (exports.NotificationType = NotificationType = {}));
 var MediaType;
 (function (MediaType) {
     MediaType["NONE"] = "0";

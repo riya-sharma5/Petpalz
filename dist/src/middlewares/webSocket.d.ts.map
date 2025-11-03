@@ -1,1 +1,1 @@
-{"version":3,"file":"webSocket.d.ts","sourceRoot":"","sources":["../../../src/middlewares/webSocket.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,IAAI,cAAc,EAAE,MAAM,WAAW,CAAC;AACrD,OAAO,IAAI,MAAM,MAAM,CAAC;AAQxB,eAAO,MAAM,aAAa,GAAI,QAAQ,IAAI,CAAC,MAAM,0IA2FhD,CAAC"}
+{"version":3,"file":"webSocket.d.ts","sourceRoot":"","sources":["../../../src/middlewares/webSocket.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,IAAI,cAAc,EAAE,MAAM,WAAW,CAAC;AACrD,OAAO,IAAI,MAAM,MAAM,CAAC;AA2BxB,eAAO,MAAM,aAAa,GAAI,QAAQ,IAAI,CAAC,MAAM,0IAwShD,CAAC"}

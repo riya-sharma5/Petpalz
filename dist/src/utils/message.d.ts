@@ -24,6 +24,10 @@ export declare const SUCCESS_RESPONSE: {
     messagesFetched: string;
     messagesMarkedRead: string;
     messageDeleted: string;
+    placeAdded: string;
+    placesFetched: string;
+    placeUpdated: string;
+    placeDeleted: string;
 };
 export declare const ERROR_RESPONSE: {
     fileUploadError: string;
@@ -55,5 +59,10 @@ export declare const ERROR_RESPONSE: {
     missingRequiredFields: string;
     messageNotFound: string;
     chatNotFound: string;
+    invalidPlaceType: string;
+    placeNotFound: string;
+    serverError: string;
+    noTokenProvided: string;
+    authentication: string;
 };
 //# sourceMappingURL=message.d.ts.map

@@ -2,6 +2,12 @@ export declare enum likeType {
     Post = "0",
     Comment = "1"
 }
+export declare enum NotificationType {
+    MESSAGE = "0",
+    LIKE = "1",
+    COMMENT = "2",
+    SYSTEM = "4"
+}
 export declare enum MediaType {
     NONE = "0",
     IMAGE = "1",

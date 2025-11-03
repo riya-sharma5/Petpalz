@@ -4,13 +4,16 @@ export interface IPlace extends Document {
     name: string;
     type: PlaceType;
     description: string;
+    city: string;
+    state: string;
+    zipcode: string;
     address: string;
-    location: {
-        type: string;
-        coordinates: [number, number];
+    coordinates: {
+        longitude: number;
+        latitude: number;
     };
-    image?: string;
-    specialDiscounts?: string;
+    image: string[];
+    specialDiscounts: string;
 }
 declare const placeModel: mongoose.Model<IPlace, {}, {}, {}, mongoose.Document<unknown, {}, IPlace, {}, {}> & IPlace & Required<{
     _id: unknown;

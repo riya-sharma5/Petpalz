@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateRequest, signupValidation, sendOtpValidation, resendOtpValidation, verifyOtpValidation, loginWithEmailValidation } from "../validations/userValidation";
+import { validateRequest, validateParams, listValidation, signupValidation, sendOtpValidation, resendOtpValidation, verifyOtpValidation, loginWithEmailValidation } from "../validations/userValidation";
 
 import {
  signup,
@@ -10,6 +10,7 @@ import {
  loginWithEmail,
  loginWithMobile,
  loginWithSocial,
+ listUsers,
 
 } from "../controllers/userControllers";
 //import { verifyJWT } from "../middlewares/JwtVerify";
@@ -21,7 +22,7 @@ router.post("/signup", validateRequest(signupValidation), signup);
 router.post("/email-login", validateRequest(loginWithEmailValidation), loginWithEmail);
 router.post("/mobile-login", loginWithMobile);
 router.post("/social-login", loginWithSocial);
-
+router.get("/list", validateParams(listValidation), listUsers);
 router.post('/send-otp', validateRequest(sendOtpValidation), sendOtp);
 router.post('/verify-otp', validateRequest(verifyOtpValidation), verifyOtp);
 router.post('/check-email', checkEmail);

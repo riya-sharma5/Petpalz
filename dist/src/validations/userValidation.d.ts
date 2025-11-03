@@ -12,4 +12,5 @@ export declare const verifyOtpValidation: Joi.ObjectSchema<any>;
 export declare const loginWithEmailValidation: Joi.ObjectSchema<any>;
 export declare const loginWihMobileValidation: Joi.ObjectSchema<any>;
 export declare const loginWithSocialValidation: Joi.ObjectSchema<any>;
+export declare const listValidation: Joi.ObjectSchema<any>;
 //# sourceMappingURL=userValidation.d.ts.map

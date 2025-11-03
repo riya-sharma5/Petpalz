@@ -3,6 +3,15 @@ export enum likeType {
   Comment = "1",
 }
 
+export enum NotificationType {
+  MESSAGE = "0",
+  LIKE = "1",
+  COMMENT = "2",
+  //FOLLOW = "3",
+  SYSTEM = "4",
+}
+
+
 export enum MediaType {
   NONE = "0",
   IMAGE = "1",

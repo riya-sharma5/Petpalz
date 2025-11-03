@@ -24,6 +24,10 @@ export const SUCCESS_RESPONSE = {
   messagesFetched: "Chat history fetched successfully",
   messagesMarkedRead: "Messages marked as read successfully",
   messageDeleted: "Message deleted successfully",
+  placeAdded: "Place added successfully",
+  placesFetched: "Places fetched successfully",
+  placeUpdated: "Place updated successfully.",
+  placeDeleted: "Place deleted successfully.",
 };
 
 export const ERROR_RESPONSE = {
@@ -56,4 +60,11 @@ export const ERROR_RESPONSE = {
   missingRequiredFields: "Some required fields are missing",
   messageNotFound: "Message not found",
   chatNotFound: "Chat not found",
+  invalidPlaceType: "Invalid place type. Must be 'hospital' or 'petshop'.",
+   placeNotFound: "Place not found.",
+  serverError: "Something went wrong. Please try again later.",
+  noTokenProvided: "No token provided",
+  authentication: "Authentication error"
 };
+
+
